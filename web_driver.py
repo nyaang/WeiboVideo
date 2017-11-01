@@ -6,7 +6,7 @@ from users import ACCOUNT, PASSWORD
 class GetCookies:
     def __init__(self):
         self.driver = webdriver.Chrome('C:/Users/akaza/Documents/URPPC/WeiboTV/weibo/chromedriver/chromedriver.exe')
-#        self.driver.maximize_window()
+        #self.driver.maximize_window()
         self.driver.get('http://weibo.com/login.php')
         time.sleep(10)
         self.run()
