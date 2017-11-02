@@ -3,7 +3,7 @@ import json
 from selenium import webdriver
 class GetCookies:
     def __init__(self):
-        self.driver = webdriver.Chrome('C:/Users/akaza/Documents/GitHub/WeiboVideo/weibo/chromedriver/chromedriver') #相对路径调用weibo/chrome/下的chromedriver
+        self.driver = webdriver.Chrome('C:/Users/akaza/Documents/GitHub/WeiboVideo/weibo/chromedriver/chromedriver.exe') #请输入你的chromedriver绝对路径，注意反斜杠方向
         #self.driver.maximize_window()
         self.driver.get('http://weibo.com/login.php') #跳转微博首页
         self.run()
