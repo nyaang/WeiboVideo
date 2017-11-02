@@ -47,7 +47,7 @@ d-----        spiders
 -a----        cookies.json
  3. 运行`scrapy crawl links`，此时目录下多出links.json，此文件为视频地址池。
 ## 开启mongodb
-**安装成功并启动mongodb后，在浏览器中输入http://localhost:27017/,可观察到:**
+**安装成功并启动mongodb后，在浏览器中输入http://localhost:27017/, 可观察到:**
 > It looks like you are trying to access MongoDB over HTTP on the native driver port.
 ## 抓取数据
  1. 得到cookies.json、links.json后，并且开启mongodb后，再次运行`scrapy crawl weibotv`，程序将从Links的视频池中选取地址抓取相应的数据并保存到数据库中。
