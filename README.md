@@ -4,13 +4,14 @@
 
     pip install -r requirements.txt
 
-
-## **2.安装mongodb和robomongo**
+## **2.编辑users.py**
+在ACCOUNT=和PASSWORD=的单引号中分别填入你的微博账号、密码
+## **3.安装mongodb和robomongo**
 可参考这篇文章：[Win10 MongoDB安装][1]
-**安装成功并启动mongodb后，在浏览器中输入http://localhost:27017/, 可观察到:**
+**安装成功并启动mongodb后，在浏览器中输入http://localhost:27017/,可观察到:**
 > It looks like you are trying to access MongoDB over HTTP on the native driver port.
 
-## **3.运行scrapy**
+## **4.运行scrapy**
 
 进入weibo目录，打开命令行，
  
@@ -34,5 +35,30 @@
     
 
 
+# 程序运行说明
+## 获取cookie.json、links.json
+ 1. web_driver.py中，第六行webdriver.Chrome括号后，请修改为你本地chromedriver.exe所在的绝对路径
+ 2. 运行`scrapy crawl weibotv`，并登陆成功后，WeiboVideo目录下将出现cookies.json，请复制一份到weibo子目录。此时weibo子目录有如下文件（夾）
+d-----        chromedriver
+d-----        spiders
+-a----        items.py
+-a----        middlewares.py
+-a----        pipelines.py
+-a----        settings.py
+-a----        cookies.json
+ 3. 运行`scrapy crawl links`，此时目录下多出links.json，此文件为视频地址池。
+## 开启mongodb
+**安装成功并启动mongodb后，在浏览器中输入http://localhost:27017/,可观察到:**
+> It looks like you are trying to access MongoDB over HTTP on the native driver port.
+## 抓取数据
+ 1. 得到cookies.json、links.json后，并且开启mongodb后，再次运行`scrapy crawl weibotv`，程序将从Links的视频池中选取地址抓取相应的数据并保存到数据库中。
+ 2. 使用robomongo新建一个connection，端口填默认的27017，如下图
+![robomongo1][3]
+ 3. 可以看到可视化的数据
+![此处输入图片的描述][4]
+
+
   [1]: http://www.jianshu.com/p/d6c7adfe45cf
   [2]: https://www.jetbrains.com/pycharm/download/#section=windows
+  [3]: ./imgs/robomongo1.JPG
+  [4]: ./imgs/weiboitem1..JPG
