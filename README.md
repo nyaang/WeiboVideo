@@ -55,7 +55,7 @@ d-----        spiders
  2. 使用robomongo新建一个connection，端口填默认的27017，如下图
 ![robomongo1][3]
  3. 可以看到可视化的数据
-![此处输入图片的描述][4]
+![weiboitem1][4]
 
 
   [1]: http://www.jianshu.com/p/d6c7adfe45cf
