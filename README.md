@@ -4,14 +4,13 @@
 
     pip install -r requirements.txt
 
-## **2.编辑users.py**
-在ACCOUNT=和PASSWORD=的单引号中分别填入你的微博账号、密码
-## **3.安装mongodb和robomongo**
+
+## **2.安装mongodb和robomongo**
 可参考这篇文章：[Win10 MongoDB安装][1]
 **安装成功并启动mongodb后，在浏览器中输入http://localhost:27017/,可观察到:**
 > It looks like you are trying to access MongoDB over HTTP on the native driver port.
 
-## **4.运行scrapy**
+## **3.运行scrapy**
 
 进入weibo目录，打开命令行，
  
@@ -55,7 +54,7 @@ d-----        spiders
  2. 使用robomongo新建一个connection，端口填默认的27017，如下图
 ![robomongo1][3]
  3. 可以看到可视化的数据
-![weiboitem1][4]
+![此处输入图片的描述][4]
 
 
   [1]: http://www.jianshu.com/p/d6c7adfe45cf
