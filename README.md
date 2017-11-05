@@ -1,4 +1,6 @@
-﻿# 依赖环境
+﻿# 导出的数据在\dump\WeiboTV\目录下
+
+# 依赖环境
 请安装python3、google chrome
 ## **1.安装依赖**
 
