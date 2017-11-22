@@ -8,7 +8,7 @@ from lxml import etree
 from scrapy.spiders import CrawlSpider, Rule
 from scrapy.linkextractors import LinkExtractor
 from weibo.items import WeiboInfo
-from web_driver import GetCookies
+from getcookies import Getcookies
 from values import FILENAME_COOKIES, URL_REGEX, FILENAME_LINKS, URL_COMMENTS, HREF_REGEX, USERCARD_REGEX, MID_REGEX
 
 
@@ -31,7 +31,8 @@ class WeiboSpider(CrawlSpider):
         try:
             file = open(FILENAME_COOKIES, 'r', encoding='utf-8')
         except FileNotFoundError:
-            GetCookies().run()
+            print("请先获取cookies")
+            Getcookies()
             file = open(FILENAME_COOKIES, 'r', encoding='utf-8')
         for cookie in json.load(file)["cookies"]:
             self.cookies[cookie["name"]]= cookie["value"]

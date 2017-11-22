@@ -5,11 +5,10 @@ import time
 import json
 
 from lxml import etree
-from web_driver import GetCookies
 from values import FILENAME_LINKS, FILENAME_COOKIES
 from values import URL_FIRST_PAGE, URL_OTHER_PAGE
 from values import HREF_REGEX
-
+from getcookies import Getcookies
 
 class LinkSpider(scrapy.Spider):
     name = "links"
@@ -21,7 +20,8 @@ class LinkSpider(scrapy.Spider):
         try:
             file = open(FILENAME_COOKIES, 'r', encoding='utf-8')
         except FileNotFoundError:
-            GetCookies().run()
+            print("请先获取cookies")
+            Getcookies()
             file = open(FILENAME_COOKIES, 'r', encoding='utf-8')
         for cookie in json.load(file)["cookies"]:
             self.cookies[cookie["name"]]= cookie["value"]
