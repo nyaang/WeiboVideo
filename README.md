@@ -29,7 +29,7 @@
  3. `cmdline.execute("scrapy crawl relation".split())`此时为从links.py开始调试
 以调试wbtv.py为例。
 在wbtv中设置断点后，在pycharm中**debug执行main.py**,即可开始断点运行。断点运行后可开始单步调试。
-未获取cookies.json时，wbtv会调用web_driver.py文件，所以在web_driver.py中设置断点后，debug执行main.py同样可以断点调试或者单步调试web_driver.py文件。
+未获取cookies.json时，wbtv会调用getcookies.py文件，所以在getcookies.py中设置断点后，debug执行main.py同样可以断点调试或者单步调试getcookies.py文件。
 
 **同样的，按1、2、3分别修改main.py后，debug main.py时能分别对wbtv.py、links.py、relation.py及其调用的其他.py文件进行调试。**
 
@@ -37,9 +37,8 @@
 
 
 # 程序运行说明
-## 获取cookie.json、links.json
- 1. web_driver.py中，第六行webdriver.Chrome括号后，请修改为你本地chromedriver.exe所在的绝对路径
- 2. 运行`scrapy crawl weibotv`，并登陆成功后，WeiboVideo目录下将出现cookies.json，请复制一份到weibo子目录。此时weibo子目录有如下文件（夾）
+## 获取cookies.json、links.json
+ 1. 运行getcookies.py，得到cookies.json，请复制一份到weibo子目录。此时weibo子目录有如下文件（夾）
 d-----        chromedriver
 d-----        spiders
 -a----        items.py
@@ -52,7 +51,7 @@ d-----        spiders
 **安装成功并启动mongodb后，在浏览器中输入http://localhost:27017/, 可观察到:**
 > It looks like you are trying to access MongoDB over HTTP on the native driver port.
 ## 抓取数据
- 1. 得到cookies.json、links.json后，并且开启mongodb后，再次运行`scrapy crawl weibotv`，程序将从Links的视频池中选取地址抓取相应的数据并保存到数据库中。
+ 1. 得到cookies.json、links.json后，并且开启mongodb后，运行`scrapy crawl weibotv`，程序将从Links的视频池中选取地址抓取相应的数据并保存到数据库中。
  2. 使用robomongo新建一个connection，端口填默认的27017，如下图
 ![robomongo1][3]
  3. 可以看到可视化的数据
