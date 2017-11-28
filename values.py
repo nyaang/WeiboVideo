@@ -28,3 +28,20 @@ MID_REGEX = '\d{16}'
 URL_COMMENTS = 'http://weibo.com/aj/v6/comment/big?ajwvr=6& id=%s&root_comment_max_id=%s&root_comment_max_id_type=&root_comment_ext_param=&page=%s&filter=all& sum_comment_number=%s&filter_tips_before=0&from=singleWeiBo&__rnd=%s'
 URL_OTHER_PAGE = "http://d.weibo.com/p/aj/v6/mblog/mbloglist?ajwvr=6&domain=102803_ctg1_1199_-_ctg1_1199&feed_sort=102803_ctg1_11991_-_ctg1_11991&feed_filter=102803_ctg1_11991_-_ctg1_11991&pre_page=%s&page=%s&pids=Pl_Core_NewMixFeed__3&current_page=%s&since_id=&pl_name=Pl_Core_NewMixFeed__3&id=102803_ctg1_1199_-_ctg1_1199&script_uri=/102803_ctg1_1199_-_ctg1_1199&feed_type=1&domain_op=102803_ctg1_1199_-_ctg1_1199&__rnd=%s"
 URL_FIRST_PAGE = "http://d.weibo.com/p/aj/v6/mblog/mbloglist?ajwvr=6&domain=102803_ctg1_1199_-_ctg1_1199&feed_sort=102803_ctg1_11991_-_ctg1_11991&feed_filter=102803_ctg1_11991_-_ctg1_11991&pagebar=%s&tab=home&current_page=%s&pre_page=%s&page=%s&pl_name=Pl_Core_NewMixFeed__3&id=102803_ctg1_1199_-_ctg1_1199&script_uri=/102803_ctg1_1199_-_ctg1_1199&feed_type=1&domain_op=102803_ctg1_1199_-_ctg1_1199&__rnd=%s"
+
+fakeHead = """
+        <!DOCTYPE html>
+        <html xmlns="http://www.w3.org/1999/xhtml">
+        <head>
+        <meta charset="utf-8">
+        <title>Fake Title</title>
+        <body>
+        """
+fakeTail = """
+</body>
+</head>
+</html>
+"""
+
+#所有分类
+categorys={'vfun','game','dance','music','movie','tech','discovery','lifestyle','show','world','sports','moe'}

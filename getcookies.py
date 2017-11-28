@@ -11,4 +11,3 @@ def Getcookies():
     json.dump(cookies, file, indent=4, sort_keys=False, ensure_ascii=False)
     file.close()
     chromedriver.close()
-Getcookies()
