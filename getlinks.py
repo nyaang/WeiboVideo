@@ -34,14 +34,14 @@ class weibovideolinks:
             links_num=links_num+1
             #获取href子标签，子标签中有九位字母构成的视频id
             link_href=link_tag.get('href')
-            href = ''.join(re.findall('[A-Za-z0-9]{9}', link_href)[-1])
+            href = ''.join(re.findall('[A-Za-z0-9]{9}', link_href)[0])
             self.links["links"].add("http://weibo.com/tv/v/" + href)
         print("requested from "+self.url+" ,linksnum:"+str(links_num))
         self.totalnum=self.totalnum+links_num
-        self.end_id=links_tag[links_num-1]['mid']
+        self.end_id=links_tag[links_num-1]['mid']   #请求过于频繁可能会产生414访问错误，稍后再试
         while(self.page<=12):
             self.getlinks()
-            time.sleep(3)
+            time.sleep(5)
             self.page=self.page+1
     def getlinks(self):
         self.url = 'https://weibo.com/p/aj/v6/mblog/videolist?type=' + self.category + '&page=' + str(
@@ -57,7 +57,7 @@ self.page) + '&end_id=' + str(self.end_id) + '&__rnd=' + str(self.generate_rnd()
             links_num = links_num + 1
             # 获取href子标签，子标签中有九位字母构成的视频id
             link_href = link_tag.get('href')
-            href = ''.join(re.findall('[A-Za-z0-9]{9}', link_href)[-1])
+            href = ''.join(re.findall('[A-Za-z0-9]{9}', link_href)[0])
             self.links["links"].add("http://weibo.com/tv/v/" + href)
         print("requested from " + self.url + " ,linksnum:" + str(links_num))
         self.totalnum = self.totalnum + links_num
