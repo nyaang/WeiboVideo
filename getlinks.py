@@ -1,8 +1,7 @@
-import requests,sys,re,time,os,json
+import requests,sys,re,time,os,json,random
 from bs4 import BeautifulSoup
 from getcookies import Getcookies
-from values import fakeHead,fakeTail,categorys
-
+from values import fakeHead,fakeTail,categorys,USER_AGENTS
 cookies={}
 try:
     cookiefile = open('cookies.json', 'r', encoding='utf-8')
@@ -21,11 +20,13 @@ class weibovideolinks:
         self.page=0
         self.totalnum=0
         self.end_id=''
+        self.headers={"User-Agent":''}
     def get_links_first_request(self,url,category):
         self.page = 2
         self.url=url
         self.category=category
-        r = requests.get(self.url,cookies=cookies)
+        self.headers["User-Agent"] = (random.choice(USER_AGENTS))
+        r = requests.get(self.url,cookies=cookies,headers=self.headers)
         self.bsObj=BeautifulSoup(r.content,'lxml')
         links_tag=self.bsObj.findAll("a",{"target":"_blank"})
         links_num = 0
@@ -38,15 +39,26 @@ class weibovideolinks:
             self.links["links"].add("http://weibo.com/tv/v/" + href)
         print("requested from "+self.url+" ,linksnum:"+str(links_num))
         self.totalnum=self.totalnum+links_num
-        self.end_id=links_tag[links_num-1]['mid']   #请求过于频繁可能会产生414访问错误，稍后再试
+        self.end_id=links_tag[links_num-1]['mid']
+        '''出错了。有两种情况：
+        请用浏览器打开weibo.com。
+        1.显示414错误。这是请求过于频繁导致的。等几分钟就好了。
+        2.未显示414错误。你的cookies.json无效。删除旧的cookies.json重新获取cookies即可。
+        '''
         while(self.page<=12):
             self.getlinks()
-            time.sleep(5)
+            time.sleep(1)
             self.page=self.page+1
     def getlinks(self):
         self.url = 'https://weibo.com/p/aj/v6/mblog/videolist?type=' + self.category + '&page=' + str(
 self.page) + '&end_id=' + str(self.end_id) + '&__rnd=' + str(self.generate_rnd())
-        r = requests.get(self.url, cookies=cookies)
+        self.headers["User-Agent"] = (random.choice(USER_AGENTS))
+        try:
+            r = requests.get(self.url, cookies=cookies, headers=self.headers)
+        except requests.exceptions.ConnectionError:
+            print("链接无响应，十秒后自动重试")
+            time.sleep(10)
+            r = requests.get(self.url, cookies=cookies, headers=self.headers)
         links_num = 0
         data = r.json()["data"]
         data = fakeHead + str(data) + fakeTail
