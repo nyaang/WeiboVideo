@@ -1,4 +1,4 @@
-import requests,sys,re,time,os,json,random
+import requests,re,time,json,random
 from bs4 import BeautifulSoup
 from getcookies import Getcookies
 from values import fakeHead,fakeTail,categorys,USER_AGENTS
