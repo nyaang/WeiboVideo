@@ -86,9 +86,9 @@ class wbvpageinfo():
             tempusercard = {'forward_usercard': ''}  # 字典临时变量
             tempusercard['forward_usercard'] = user_card
             self.forwards.append(tempusercard)
-        cardfile = open('usercards.json', 'w', encoding='utf-8')
-        json.dump(self.forwards, cardfile, indent=4, sort_keys=False, ensure_ascii=False)
-        cardfile.close()
+        #cardfile = open('usercards.json', 'w', encoding='utf-8')
+        #json.dump(self.forwards, cardfile, indent=4, sort_keys=False, ensure_ascii=False)
+        #cardfile.close()
 
     def generate_rnd(self):
         return str(int(time.time() * 1000))
