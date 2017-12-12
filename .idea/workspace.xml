@@ -2,7 +2,6 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="20f3b1c7-8e0c-4a87-bac1-aaab0f5e9709" name="Default" comment="">
-      <change beforePath="" afterPath="$PROJECT_DIR$/getpageinfo.py" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
       <change beforePath="$PROJECT_DIR$/getlinks.py" afterPath="$PROJECT_DIR$/getlinks.py" />
     </list>
@@ -18,7 +17,7 @@
       <file leaf-file-name="getlinks.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/getlinks.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="791">
+            <state relative-caret-position="771">
               <caret line="89" column="18" lean-forward="false" selection-start-line="89" selection-start-column="18" selection-end-line="89" selection-end-column="18" />
               <folding>
                 <element signature="e#0#35#0" expanded="true" />
@@ -94,7 +93,7 @@
   </component>
   <component name="PropertiesComponent">
     <property name="last_opened_file_path" value="$PROJECT_DIR$" />
-    <property name="settings.editor.selected.configurable" value="configurable.group.editor" />
+    <property name="settings.editor.selected.configurable" value="editor.preferences.fonts.default" />
   </component>
   <component name="RunDashboard">
     <option name="ruleStates">
@@ -371,13 +370,20 @@
       <option name="project" value="LOCAL" />
       <updated>1512486588191</updated>
     </task>
-    <option name="localTasksCounter" value="24" />
+    <task id="LOCAL-00024" summary="增加抓取单个页面信息的getpageinfo">
+      <created>1513002079704</created>
+      <option name="number" value="00024" />
+      <option name="presentableId" value="LOCAL-00024" />
+      <option name="project" value="LOCAL" />
+      <updated>1513002079704</updated>
+    </task>
+    <option name="localTasksCounter" value="25" />
     <servers />
   </component>
   <component name="ToolWindowManager">
     <frame x="-8" y="32" width="1936" height="1056" extended-state="6" />
     <layout>
-      <window_info id="Project" active="true" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.37632135" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.37632135" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="13" side_tool="true" content_ui="tabs" />
       <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.19235095" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
@@ -413,7 +419,8 @@
     <MESSAGE value="update getlinks.py" />
     <MESSAGE value="fix bugs" />
     <MESSAGE value="fix bug&#10;add user-agents" />
-    <option name="LAST_COMMIT_MESSAGE" value="fix bug&#10;add user-agents" />
+    <MESSAGE value="增加抓取单个页面信息的getpageinfo" />
+    <option name="LAST_COMMIT_MESSAGE" value="增加抓取单个页面信息的getpageinfo" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -422,16 +429,6 @@
           <url>file://$PROJECT_DIR$/weibo/spiders/wbtv.py</url>
           <line>1</line>
           <option name="timeStamp" value="1" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/getlinks.py</url>
-          <line>56</line>
-          <option name="timeStamp" value="3" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/getlinks.py</url>
-          <line>28</line>
-          <option name="timeStamp" value="4" />
         </line-breakpoint>
       </breakpoints>
       <option name="time" value="5" />
@@ -717,7 +714,7 @@
     <entry file="file://$PROJECT_DIR$/cookies.json" />
     <entry file="file://$PROJECT_DIR$/getlinks.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="791">
+        <state relative-caret-position="771">
           <caret line="89" column="18" lean-forward="false" selection-start-line="89" selection-start-column="18" selection-end-line="89" selection-end-column="18" />
           <folding>
             <element signature="e#0#35#0" expanded="true" />

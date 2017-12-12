@@ -1,7 +1,7 @@
 import requests,re,time,json,random
 from bs4 import BeautifulSoup
 from getcookies import Getcookies
-from values import fakeHead,fakeTail,categorys,USER_AGENTS
+from values import categorys,USER_AGENTS
 cookies={}
 try:
     cookiefile = open('cookies.json', 'r', encoding='utf-8')
@@ -56,13 +56,13 @@ self.page) + '&end_id=' + str(self.end_id) + '&__rnd=' + str(self.generate_rnd()
         try:
             r = requests.get(self.url, cookies=cookies, headers=self.headers)
         except requests.exceptions.ConnectionError:
-            print("链接无响应，十秒后自动重试")
-            time.sleep(10)
+            print("链接无响应，3秒后自动重试")
+            time.sleep(3)
             r = requests.get(self.url, cookies=cookies, headers=self.headers)
         links_num = 0
-        data = r.json()["data"]
-        data = fakeHead + str(data) + fakeTail
-        self.bsObj = BeautifulSoup(data, 'html.parser')
+        data = r.json()
+        html = data["data"]["data"]
+        self.bsObj = BeautifulSoup(html, 'html.parser')
         links_tag = self.bsObj.findAll("a", {"target": "_blank"})
         # 统计当前请求页有多少个视频链接
         for link_tag in links_tag:
