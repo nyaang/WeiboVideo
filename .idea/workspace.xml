@@ -3,7 +3,7 @@
   <component name="ChangeListManager">
     <list default="true" id="20f3b1c7-8e0c-4a87-bac1-aaab0f5e9709" name="Default" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change beforePath="$PROJECT_DIR$/getlinks.py" afterPath="$PROJECT_DIR$/getlinks.py" />
+      <change beforePath="$PROJECT_DIR$/getpageinfo.py" afterPath="$PROJECT_DIR$/getpageinfo.py" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
@@ -14,11 +14,23 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="375">
-      <file leaf-file-name="getlinks.py" pinned="false" current-in-tab="true">
+      <file leaf-file-name="getlinks.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/getlinks.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="771">
+            <state relative-caret-position="1634">
               <caret line="89" column="18" lean-forward="false" selection-start-line="89" selection-start-column="18" selection-end-line="89" selection-end-column="18" />
+              <folding>
+                <element signature="e#0#35#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="getpageinfo.py" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/getpageinfo.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="545">
+              <caret line="90" column="44" lean-forward="true" selection-start-line="90" selection-start-column="44" selection-end-line="90" selection-end-column="44" />
               <folding>
                 <element signature="e#0#35#0" expanded="true" />
               </folding>
@@ -52,6 +64,7 @@
         <option value="$PROJECT_DIR$/values.py" />
         <option value="$PROJECT_DIR$/usertest.py" />
         <option value="$PROJECT_DIR$/getlinks.py" />
+        <option value="$PROJECT_DIR$/getpageinfo.py" />
       </list>
     </option>
   </component>
@@ -76,6 +89,8 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
+      <pane id="Scope" />
+      <pane id="Scratches" />
       <pane id="ProjectPane">
         <subPane>
           <expand>
@@ -87,8 +102,6 @@
           <select />
         </subPane>
       </pane>
-      <pane id="Scratches" />
-      <pane id="Scope" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -377,7 +390,28 @@
       <option name="project" value="LOCAL" />
       <updated>1513002079704</updated>
     </task>
-    <option name="localTasksCounter" value="25" />
+    <task id="LOCAL-00025" summary="update getlinks,减少多余处理">
+      <created>1513049579181</created>
+      <option name="number" value="00025" />
+      <option name="presentableId" value="LOCAL-00025" />
+      <option name="project" value="LOCAL" />
+      <updated>1513049579182</updated>
+    </task>
+    <task id="LOCAL-00026" summary="update">
+      <created>1513091304554</created>
+      <option name="number" value="00026" />
+      <option name="presentableId" value="LOCAL-00026" />
+      <option name="project" value="LOCAL" />
+      <updated>1513091304554</updated>
+    </task>
+    <task id="LOCAL-00027" summary="update">
+      <created>1513091350886</created>
+      <option name="number" value="00027" />
+      <option name="presentableId" value="LOCAL-00027" />
+      <option name="project" value="LOCAL" />
+      <updated>1513091350886</updated>
+    </task>
+    <option name="localTasksCounter" value="28" />
     <servers />
   </component>
   <component name="ToolWindowManager">
@@ -412,7 +446,6 @@
   <component name="VcsManagerConfiguration">
     <MESSAGE value="更新登陆方式" />
     <MESSAGE value="添加说明图片" />
-    <MESSAGE value="update" />
     <MESSAGE value="重构cookie获取方式" />
     <MESSAGE value="更新说明" />
     <MESSAGE value="add getlinks.py" />
@@ -420,7 +453,9 @@
     <MESSAGE value="fix bugs" />
     <MESSAGE value="fix bug&#10;add user-agents" />
     <MESSAGE value="增加抓取单个页面信息的getpageinfo" />
-    <option name="LAST_COMMIT_MESSAGE" value="增加抓取单个页面信息的getpageinfo" />
+    <MESSAGE value="update getlinks,减少多余处理" />
+    <MESSAGE value="update" />
+    <option name="LAST_COMMIT_MESSAGE" value="update" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -436,13 +471,6 @@
     <watches-manager />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://C:/Program Files/Python36/Lib/site-packages/selenium/webdriver/chrome/webdriver.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="817">
-          <caret line="46" column="0" lean-forward="false" selection-start-line="46" selection-start-column="0" selection-end-line="46" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/weibo/pipelines.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
@@ -714,8 +742,18 @@
     <entry file="file://$PROJECT_DIR$/cookies.json" />
     <entry file="file://$PROJECT_DIR$/getlinks.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="771">
+        <state relative-caret-position="1634">
           <caret line="89" column="18" lean-forward="false" selection-start-line="89" selection-start-column="18" selection-end-line="89" selection-end-column="18" />
+          <folding>
+            <element signature="e#0#35#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/getpageinfo.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="545">
+          <caret line="90" column="44" lean-forward="true" selection-start-line="90" selection-start-column="44" selection-end-line="90" selection-end-column="44" />
           <folding>
             <element signature="e#0#35#0" expanded="true" />
           </folding>
