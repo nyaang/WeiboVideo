@@ -2,6 +2,8 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="20f3b1c7-8e0c-4a87-bac1-aaab0f5e9709" name="Default" comment="">
+      <change beforePath="" afterPath="$PROJECT_DIR$/links/links1129.json" />
+      <change beforePath="" afterPath="$PROJECT_DIR$/links/links1205.json" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -427,7 +429,14 @@
       <option name="project" value="LOCAL" />
       <updated>1513570273903</updated>
     </task>
-    <option name="localTasksCounter" value="30" />
+    <task id="LOCAL-00030" summary="update links">
+      <created>1513571158576</created>
+      <option name="number" value="00030" />
+      <option name="presentableId" value="LOCAL-00030" />
+      <option name="project" value="LOCAL" />
+      <updated>1513571158576</updated>
+    </task>
+    <option name="localTasksCounter" value="31" />
     <servers />
   </component>
   <component name="ToolWindowManager">
@@ -472,7 +481,8 @@
     <MESSAGE value="update getlinks,减少多余处理" />
     <MESSAGE value="update" />
     <MESSAGE value="update 抓取评论" />
-    <option name="LAST_COMMIT_MESSAGE" value="update 抓取评论" />
+    <MESSAGE value="update links" />
+    <option name="LAST_COMMIT_MESSAGE" value="update links" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
