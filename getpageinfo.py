@@ -116,7 +116,7 @@ class wbvpageinfo():
                     "forward_usercard": user_card,
                 })
         self.prasecomments()
-    def get_comments(self,r):  #第一种方式获取评论
+    def get_comments(self,r):  #解析json中的评论
         data = r.json()
         html = data["data"]["html"]
         self.bsObj = BeautifulSoup(html, 'html.parser')
@@ -136,7 +136,7 @@ class wbvpageinfo():
                     if content=='\n' or content=='：':#过滤掉'：'和'\n'
                         continue
                     comment_content=comment_content+content
-            if comment_content=='':#如果是没有文字内容的回复，则跳过
+            if comment_content=='' or comment_content==' ':#如果是没有文字内容的回复，则跳过
                 continue
 
             try:
@@ -155,6 +155,51 @@ class wbvpageinfo():
                                   "comment_id": comment_id,
                                   "comment_likes": comment_likes,
                                   "comment_usercard": comment_usercard})
+    def get_comments_way2_more_comments(self,r):  #解析json中的评论，增加一次判断去重，用于二级评论的第一次加载
+        data = r.json()
+        html = data["data"]["html"]
+        self.bsObj = BeautifulSoup(html, 'html.parser')
+        comment_tags = self.bsObj.findAll("div", {"class": "list_li S_line1 clearfix"})
+        for comment_tag in comment_tags:
+            comment_id = comment_tag.get('comment_id')
+            comment_content_tag=comment_tag.find("div", {"class": "WB_text"})
+            comment_usercard_tag = comment_content_tag.a
+            try:
+                comment_usercard = re.findall('\d{10}', comment_usercard_tag.get('usercard'))[0]
+            except IndexError:
+                continue  # 该用户的id不是10位数字，跳过这位用户
+
+            comment_content=''
+            for content in comment_content_tag:
+                if (isinstance(content, str)):
+                    if content=='\n' or content=='：':#过滤掉'：'和'\n'
+                        continue
+                    comment_content=comment_content+content
+            if comment_content=='' or comment_content==' ':#如果是没有文字内容的回复，则跳过
+                continue
+
+            try:
+                comment_likes_tag = comment_tag.find("em",
+                                                     {"class": "W_ficon ficon_praised S_txt2"}).next_sibling.get_text()
+            except AttributeError:
+                comment_likes_tag = comment_tag.find("em", {
+                    "class": "W_ficon ficon_praised S_txt2"}).next_sibling.next_sibling.get_text()
+
+            if comment_likes_tag == '赞':  # 此时视频的点赞数为0
+                comment_likes = 0
+            else:
+                comment_likes = int(comment_likes_tag)
+
+            bool_exist=False
+            for comment in self.comments:   #如果评论已在评论列表中，则不再次添加
+                if comment_id == comment["comment_id"]:
+                    bool_exist = True
+                    continue
+            if bool_exist == False:
+                self.comments.append({"comment_content": comment_content,
+                                      "comment_id": comment_id,
+                                      "comment_likes": comment_likes,
+                                      "comment_usercard": comment_usercard})
     def loadmorepage(self):
         try:
             nextpage = self.bsObj.find("div", {"node-type": "comment_loading"}).get("action-data")
@@ -165,6 +210,29 @@ class wbvpageinfo():
                 return nextpage
             except AttributeError:
                 return False
+    def load_more_comment(self,bsObj):
+        try:
+            more_comment_tags=self.bsObj.findAll("a",{"action-type":"click_more_child_comment_big"})
+            for more_comment_tag in more_comment_tags:
+                more_comment_tag=more_comment_tag.get("action-data")
+                more_comment_url='https://weibo.com/aj/v6/comment/big?ajwvr=6&'+more_comment_tag+'&from=singleWeiBo&__rnd='+str(self.generate_rnd())
+                r=self.getrequest(more_comment_url)
+                self.get_comments_way2_more_comments(r)
+                self.load_more_comment_continue()
+            self.bsObj=bsObj
+        except AttributeError:  #没有二级评论
+            return
+    def load_more_comment_continue(self):
+        try:
+            more_comment_tag = self.bsObj.find("a", {"action-type": "click_more_child_comment_big"}).get("action-data")
+            more_comment_url = 'https://weibo.com/aj/v6/comment/big?ajwvr=6&' + more_comment_tag + '&from=singleWeiBo&__rnd=' + str(
+                self.generate_rnd())
+            r = self.getrequest(more_comment_url)
+            self.get_comments(r)
+            self.load_more_comment_continue()
+        except AttributeError:
+            print("多级评论加载结束")
+            return
     def get_comments_way2(self):
         firsturl='https://weibo.com/aj/v6/comment/big?ajwvr=6&id='+self.id+'&filter=all&from=singleWeiBo&__rnd='+str(self.generate_rnd())
         r = self.getrequest(firsturl)
@@ -174,7 +242,7 @@ class wbvpageinfo():
             url='https://weibo.com/aj/v6/comment/big?ajwvr=6&'+self.loadmorepage()
             r = self.getrequest(url)
             self.get_comments(r)
-
+            self.load_more_comment(self.bsObj)
     def prasecomments(self):
         #第一次获取评论请求
         firsturl='https://weibo.com/aj/v6/comment/big?ajwvr=6&id='+self.id+'&page=1'+"&__rnd="+str(self.generate_rnd())
@@ -213,7 +281,6 @@ class wbvpageinfo():
 
 #读取links.json
 links = json.load(open("links.json", 'r', encoding='utf-8'))["links"]
-
 wbvpage=wbvpageinfo('')
 for link in links:
     wbvpage.__init__(link)
