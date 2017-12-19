@@ -231,7 +231,6 @@ class wbvpageinfo():
             self.get_comments(r)
             self.load_more_comment_continue()
         except AttributeError:
-            print("多级评论加载结束")
             return
     def get_comments_way2(self):
         firsturl='https://weibo.com/aj/v6/comment/big?ajwvr=6&id='+self.id+'&filter=all&from=singleWeiBo&__rnd='+str(self.generate_rnd())
