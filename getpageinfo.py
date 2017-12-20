@@ -1,7 +1,8 @@
 import requests,re,time,json,random,pymongo,threading
 from bs4 import BeautifulSoup
 from getcookies import Getcookies
-from values import USER_AGENTS
+from values import USER_AGENTS,proxiestxy
+
 cookies={}
 try:
     cookiefile = open('cookies.json', 'r', encoding='utf-8')
@@ -15,6 +16,7 @@ class wbvpageinfo(threading.Thread):
     def __init__(self,links):
         threading.Thread.__init__(self)
         self.links=links
+        self.proxy=None
     def run(self):
         for link in self.links:
             self.url=link
@@ -24,18 +26,28 @@ class wbvpageinfo(threading.Thread):
         #使用随机的user-agent
         self.headers["User-Agent"] = (random.choice(USER_AGENTS))
         try:
-            r = requests.get(url, cookies=cookies, headers=self.headers)
+            r = requests.get(url, cookies=cookies, headers=self.headers,proxies=self.proxy,timeout=3.05)
             if(r.status_code==414):
                 print("414错误！")
                 time.sleep(60)
                 r = self.getrequest(url)
             print("requested from:" + url)
             return r
+        except requests.exceptions.ReadTimeout:
+            print("连接速度慢，切换代理")
+            self.changeproxy()
+            r = self.getrequest(url)
+            return r
         except requests.exceptions.ConnectionError:
             print("连接无响应，1秒后自动重试")
             time.sleep(1)
             r = self.getrequest(url)
             return r
+    def changeproxy(self):
+        if(self.proxy==None):
+            self.proxy=proxiestxy
+        elif(self.proxy==proxiestxy):
+            self.proxy=None
     def prasevideo(self):
         self.comments_num=0 #评论数
         self.forwards_num=0 #转发数

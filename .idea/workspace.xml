@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="20f3b1c7-8e0c-4a87-bac1-aaab0f5e9709" name="Default" comment="">
+    <list default="true" id="20f3b1c7-8e0c-4a87-bac1-aaab0f5e9709" name="Default" comment="update">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
       <change beforePath="$PROJECT_DIR$/getpageinfo.py" afterPath="$PROJECT_DIR$/getpageinfo.py" />
+      <change beforePath="$PROJECT_DIR$/values.py" afterPath="$PROJECT_DIR$/values.py" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
@@ -24,14 +25,24 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="getpageinfo.py" pinned="false" current-in-tab="true">
+      <file leaf-file-name="getpageinfo.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/getpageinfo.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="437">
-              <caret line="29" column="29" lean-forward="false" selection-start-line="29" selection-start-column="29" selection-end-line="29" selection-end-column="29" />
+            <state relative-caret-position="586">
+              <caret line="334" column="13" lean-forward="false" selection-start-line="334" selection-start-column="13" selection-end-line="334" selection-end-column="13" />
               <folding>
                 <element signature="e#0#53#0" expanded="true" />
               </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="values.py" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/values.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="586">
+              <caret line="70" column="1" lean-forward="false" selection-start-line="70" selection-start-column="1" selection-end-line="70" selection-end-column="1" />
+              <folding />
             </state>
           </provider>
         </entry>
@@ -59,10 +70,10 @@
         <option value="$PROJECT_DIR$/web_driver.py" />
         <option value="$PROJECT_DIR$/README.md" />
         <option value="$PROJECT_DIR$/getcookies.py" />
-        <option value="$PROJECT_DIR$/values.py" />
         <option value="$PROJECT_DIR$/usertest.py" />
         <option value="$PROJECT_DIR$/getlinks.py" />
         <option value="$PROJECT_DIR$/getpageinfo.py" />
+        <option value="$PROJECT_DIR$/values.py" />
       </list>
     </option>
   </component>
@@ -468,7 +479,14 @@
       <option name="project" value="LOCAL" />
       <updated>1513733436099</updated>
     </task>
-    <option name="localTasksCounter" value="35" />
+    <task id="LOCAL-00035" summary="update">
+      <created>1513745342050</created>
+      <option name="number" value="00035" />
+      <option name="presentableId" value="LOCAL-00035" />
+      <option name="project" value="LOCAL" />
+      <updated>1513745342050</updated>
+    </task>
+    <option name="localTasksCounter" value="36" />
     <servers />
   </component>
   <component name="ToolWindowManager">
@@ -513,10 +531,10 @@
     <MESSAGE value="增加抓取单个页面信息的getpageinfo" />
     <MESSAGE value="update getlinks,减少多余处理" />
     <MESSAGE value="update 抓取评论" />
-    <MESSAGE value="update" />
     <MESSAGE value="update links" />
     <MESSAGE value="增加双线程和三线程模式" />
-    <option name="LAST_COMMIT_MESSAGE" value="增加双线程和三线程模式" />
+    <MESSAGE value="update" />
+    <option name="LAST_COMMIT_MESSAGE" value="update" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -778,13 +796,6 @@
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/usertest.py" />
-    <entry file="file://$PROJECT_DIR$/values.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="549">
-          <caret line="66" column="1" lean-forward="false" selection-start-line="66" selection-start-column="1" selection-end-line="66" selection-end-column="1" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://C:/Program Files/Python36/Lib/site-packages/scrapy/spiders/crawl.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="306">
@@ -811,11 +822,19 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/getpageinfo.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="437">
-          <caret line="29" column="29" lean-forward="false" selection-start-line="29" selection-start-column="29" selection-end-line="29" selection-end-column="29" />
+        <state relative-caret-position="586">
+          <caret line="334" column="13" lean-forward="false" selection-start-line="334" selection-start-column="13" selection-end-line="334" selection-end-column="13" />
           <folding>
             <element signature="e#0#53#0" expanded="true" />
           </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/values.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="586">
+          <caret line="70" column="1" lean-forward="false" selection-start-line="70" selection-start-column="1" selection-end-line="70" selection-end-column="1" />
+          <folding />
         </state>
       </provider>
     </entry>
