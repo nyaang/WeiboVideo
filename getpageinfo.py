@@ -26,8 +26,8 @@ class wbvpageinfo(threading.Thread):
         try:
             r = requests.get(url, cookies=cookies, headers=self.headers)
             if(r.status_code==414):
-                print("60错误！")
-                time.sleep(120)
+                print("414错误！")
+                time.sleep(60)
                 r = self.getrequest(url)
             print("requested from:" + url)
             return r
