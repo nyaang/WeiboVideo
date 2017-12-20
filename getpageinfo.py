@@ -2,7 +2,6 @@ import requests,re,time,json,random,pymongo,threading
 from bs4 import BeautifulSoup
 from getcookies import Getcookies
 from values import USER_AGENTS,proxiestxy
-
 cookies={}
 try:
     cookiefile = open('cookies.json', 'r', encoding='utf-8')
