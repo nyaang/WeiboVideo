@@ -1,4 +1,4 @@
-import requests,re,time,json,random,pymongo
+import requests,re,time,json,random,pymongo,threading
 from bs4 import BeautifulSoup
 from getcookies import Getcookies
 from values import USER_AGENTS
@@ -11,24 +11,24 @@ except FileNotFoundError:
 for cookie in json.load(cookiefile)["cookies"]:
     cookies[cookie["name"]] = cookie["value"]
 cookiefile.close()
-class wbvpageinfo():
-    def __init__(self,url):
-        self.comments_num=0 #评论数
-        self.forwards_num=0 #转发数
-        self.likes_num=0 #点赞数
-        self.author='' #作者
-        self.id='' #视频的16位id
-        self.url=url #视频的9位url
-        self.content='' #视频标题
-        self.comments=[]
-        self.forwards=[]
-        self.likes=[]
-        self.headers={"User-Agent":''}
+class wbvpageinfo(threading.Thread):
+    def __init__(self,links):
+        threading.Thread.__init__(self)
+        self.links=links
+    def run(self):
+        for link in self.links:
+            self.url=link
+            if (self.prasevideo() == 404):
+                continue
     def getrequest(self,url):
         #使用随机的user-agent
         self.headers["User-Agent"] = (random.choice(USER_AGENTS))
         try:
             r = requests.get(url, cookies=cookies, headers=self.headers)
+            if(r.status_code==414):
+                print("60错误！")
+                time.sleep(120)
+                r = self.getrequest(url)
             print("requested from:" + url)
             return r
         except requests.exceptions.ConnectionError:
@@ -37,6 +37,16 @@ class wbvpageinfo():
             r = self.getrequest(url)
             return r
     def prasevideo(self):
+        self.comments_num=0 #评论数
+        self.forwards_num=0 #转发数
+        self.likes_num=0 #点赞数
+        self.author='' #作者
+        self.id='' #视频的16位id
+        self.content='' #视频标题
+        self.comments=[]
+        self.forwards=[]
+        self.likes=[]
+        self.headers={"User-Agent":''}
         r = self.getrequest(self.url)
         self.bsObj=BeautifulSoup(r.content,'lxml')
         try:
@@ -45,7 +55,7 @@ class wbvpageinfo():
         except ValueError:
             self.comments_num=0
         except AttributeError:
-            print(self.url+"404错误，原视频页面不存在")
+            print(self.url+" 404错误，原视频页面不存在")
             return
 
         try:
@@ -280,8 +290,34 @@ class wbvpageinfo():
 
 #读取links.json
 links = json.load(open("links.json", 'r', encoding='utf-8'))["links"]
-wbvpage=wbvpageinfo('')
-for link in links:
-    wbvpage.__init__(link)
-    if(wbvpage.prasevideo()==404):
-        continue
+
+def thread2mode():
+    thread_num=2
+    links_len=len(links)
+    split_num=links_len//thread_num
+    links1=links[0:split_num]
+    links2=links[split_num:links_len]
+    thread1=wbvpageinfo(links1)
+    thread2=wbvpageinfo(links2)
+    thread1.start()
+    thread2.start()
+
+
+#三线程模式
+def thread3mode():
+    thread_num=3
+    links_len=len(links)
+    split_num=links_len//thread_num
+    links1=links[0:split_num]
+    links2=links[split_num:split_num*2]
+    links3=links[split_num*2:links_len]
+
+    thread1=wbvpageinfo(links1)
+    thread2=wbvpageinfo(links2)
+    thread3=wbvpageinfo(links3)
+    thread1.start()
+    thread2.start()
+    thread3.start()
+
+#默认使用双线程模式,如需三线程请把2改成3
+thread2mode()
