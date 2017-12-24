@@ -1,8 +1,10 @@
 import requests,re,time,json,random,pymongo,threading
 from bs4 import BeautifulSoup
 from getcookies import Getcookies
-from values import USER_AGENTS,proxiestxy
+from fake_useragent import UserAgent
+from values import proxiestxy
 cookies={}
+ua = UserAgent()
 try:
     cookiefile = open('cookies.json', 'r', encoding='utf-8')
 except FileNotFoundError:
@@ -23,7 +25,8 @@ class wbvpageinfo(threading.Thread):
                 continue
     def getrequest(self,url):
         #使用随机的user-agent
-        self.headers["User-Agent"] = (random.choice(USER_AGENTS))
+        self.headers["User-Agent"] = ua.random
+        time.sleep(0.5)
         try:
             r = requests.get(url, cookies=cookies, headers=self.headers,proxies=self.proxy,timeout=3.05)
             if(r.status_code==414):
@@ -301,34 +304,19 @@ class wbvpageinfo(threading.Thread):
 
 #读取links.json
 links = json.load(open("links.json", 'r', encoding='utf-8'))["links"]
-
-def thread2mode():
-    thread_num=2
-    links_len=len(links)
-    split_num=links_len//thread_num
-    links1=links[0:split_num]
-    links2=links[split_num:links_len]
-    thread1=wbvpageinfo(links1)
-    thread2=wbvpageinfo(links2)
-    thread1.start()
-    thread2.start()
-
-
-#三线程模式
-def thread3mode():
-    thread_num=3
-    links_len=len(links)
-    split_num=links_len//thread_num
-    links1=links[0:split_num]
-    links2=links[split_num:split_num*2]
-    links3=links[split_num*2:links_len]
-
-    thread1=wbvpageinfo(links1)
-    thread2=wbvpageinfo(links2)
-    thread3=wbvpageinfo(links3)
-    thread1.start()
-    thread2.start()
-    thread3.start()
-
-#默认使用双线程模式,如需三线程请把2改成3
-thread2mode()
+def morethreads(threadnum):
+    linksqueue=[]
+    links_len = len(links)
+    split_num = links_len // threadnum
+    i = 1
+    while (i < threadnum):
+        linki=links[split_num * (i-1):split_num * i] #0-1 1-2 2-3 3-4 4-end
+        linksqueue.append(wbvpageinfo(linki))
+        i = i + 1
+    linkend=links[split_num * (i-1):links_len]
+    linksqueue.append(wbvpageinfo(linkend))
+    i = 0
+    while (i < threadnum):
+        linksqueue[i].start()
+        i=i+1
+morethreads(100)  #在此输入进程数
