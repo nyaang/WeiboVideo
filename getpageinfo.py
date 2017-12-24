@@ -1,10 +1,10 @@
-import requests,re,time,json,random,pymongo,threading
+import requests,re,time,json,pymongo,threading,random
 from bs4 import BeautifulSoup
 from getcookies import Getcookies
 from fake_useragent import UserAgent
-from values import proxiestxy
 cookies={}
 ua = UserAgent()
+proxies=json.load(open("proxies_useable.json", 'r', encoding='utf-8'))
 try:
     cookiefile = open('cookies.json', 'r', encoding='utf-8')
 except FileNotFoundError:
@@ -26,9 +26,8 @@ class wbvpageinfo(threading.Thread):
     def getrequest(self,url):
         #使用随机的user-agent
         self.headers["User-Agent"] = ua.random
-        time.sleep(0.5)
         try:
-            r = requests.get(url, cookies=cookies, headers=self.headers,proxies=self.proxy,timeout=3.05)
+            r = requests.get(url, cookies=cookies, headers=self.headers,proxies=self.random_proxy(),timeout=3.05)
             if(r.status_code==414):
                 print("414错误！")
                 time.sleep(60)
@@ -36,20 +35,14 @@ class wbvpageinfo(threading.Thread):
             print("requested from:" + url)
             return r
         except requests.exceptions.ReadTimeout:
-            print("连接速度慢，切换代理")
-            self.changeproxy()
             r = self.getrequest(url)
             return r
         except requests.exceptions.ConnectionError:
-            print("连接无响应，1秒后自动重试")
-            time.sleep(1)
             r = self.getrequest(url)
             return r
-    def changeproxy(self):
-        if(self.proxy==None):
-            self.proxy=proxiestxy
-        elif(self.proxy==proxiestxy):
-            self.proxy=None
+    def random_proxy(self):
+        proxy=random.choice(proxies)
+        return proxy
     def prasevideo(self):
         self.comments_num=0 #评论数
         self.forwards_num=0 #转发数

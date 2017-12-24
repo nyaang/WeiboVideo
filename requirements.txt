@@ -5,3 +5,4 @@ jieba
 numpy
 selenium
 lxml
+fake_useragent
