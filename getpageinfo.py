@@ -30,7 +30,7 @@ class wbvpageinfo(threading.Thread):
             r = requests.get(url, cookies=cookies, headers=self.headers,proxies=self.random_proxy(),timeout=3.05)
             if(r.status_code==414):
                 print("414错误！")
-                time.sleep(60)
+                #time.sleep(60)
                 r = self.getrequest(url)
             print("requested from:" + url)
             return r
@@ -263,7 +263,7 @@ class wbvpageinfo(threading.Thread):
         #第一次获取评论请求
         firsturl='https://weibo.com/aj/v6/comment/big?ajwvr=6&id='+self.id+'&page=1'+"&__rnd="+str(self.generate_rnd())
         r=self.getrequest(firsturl)
-        data = r.json()
+        data = r.json() #json.decoder.JSONDecodeError:
         try:
             totalpage = data["data"]["page"]["totalpage"]
             page = 1
@@ -291,7 +291,7 @@ class wbvpageinfo(threading.Thread):
              "likes_num": self.likes_num,
              "forwards_num": self.forwards_num,
              "comments": self.comments,
-             "forwards": self.forwards,
+             "forwards": self.forwards, #pymongo.errors.ServerSelectionTimeoutError: No servers found yet
              }
         )
 
@@ -303,7 +303,7 @@ def morethreads(threadnum):
     split_num = links_len // threadnum
     i = 1
     while (i < threadnum):
-        linki=links[split_num * (i-1):split_num * i] #0-1 1-2 2-3 3-4 4-end
+        linki=links[split_num * (i-1):split_num * i]
         linksqueue.append(wbvpageinfo(linki))
         i = i + 1
     linkend=links[split_num * (i-1):links_len]
@@ -312,4 +312,4 @@ def morethreads(threadnum):
     while (i < threadnum):
         linksqueue[i].start()
         i=i+1
-morethreads(100)  #在此输入进程数
+morethreads(1)  #在此输入进程数
