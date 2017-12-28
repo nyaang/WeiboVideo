@@ -161,11 +161,13 @@ class wbvpageinfo(threading.Thread):
                 comment_likes = 0
             else:
                 comment_likes = int(comment_likes_tag)
-
+            comment_time = re.findall("\d{1,2}月.*", comment_tag.get_text())[0]  #评论时间
             self.comments.append({"comment_content": comment_content,
                                   "comment_id": comment_id,
                                   "comment_likes": comment_likes,
-                                  "comment_usercard": comment_usercard})
+                                  "comment_usercard": comment_usercard,
+                                  "comment_time": comment_time
+                                  })
     def get_comments_way2_more_comments(self,r):  #解析json中的评论，增加一次判断去重，用于二级评论的第一次加载
         data = r.json()
         html = data["data"]["html"]
@@ -309,7 +311,6 @@ def start(threadnum):
     linksqueue.append(wbvpageinfo(linkend))
     i = 0
     while (i < threadnum):
-        #linksqueue[i].start()
-        linksqueue[i].run()
+        linksqueue[i].start()
         i=i+1
 start(1)  #在此输入进程数
