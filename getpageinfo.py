@@ -5,14 +5,7 @@ from fake_useragent import UserAgent
 cookies={}
 ua = UserAgent()
 proxies=json.load(open("proxies_useable.json", 'r', encoding='utf-8'))
-try:
-    cookiefile = open('cookies.json', 'r', encoding='utf-8')
-except FileNotFoundError:
-    Getcookies()
-    cookiefile = open('cookies.json', 'r', encoding='utf-8')
-for cookie in json.load(cookiefile)["cookies"]:
-    cookies[cookie["name"]] = cookie["value"]
-cookiefile.close()
+links = json.load(open("links.json", 'r', encoding='utf-8'))["links"]
 class wbvpageinfo(threading.Thread):
     def __init__(self,links):
         threading.Thread.__init__(self)
@@ -34,10 +27,7 @@ class wbvpageinfo(threading.Thread):
                 r = self.getrequest(url)
             print("requested from:" + url)
             return r
-        except requests.exceptions.ReadTimeout:
-            r = self.getrequest(url)
-            return r
-        except requests.exceptions.ConnectionError:
+        except:
             r = self.getrequest(url)
             return r
     def random_proxy(self):
@@ -108,29 +98,33 @@ class wbvpageinfo(threading.Thread):
                 data = r.json()
                 html = data["data"]["html"]
                 self.bsObj = BeautifulSoup(html, 'html.parser')
-                usercard_tags = self.bsObj.findAll("a", {"node-type": "name"})
-
-                for usecard_tag in usercard_tags:
-                    usercard = usecard_tag.get('usercard')
+                #usercard_tags = self.bsObj.findAll("a", {"node-type": "name"})
+                usercard_tags = self.bsObj.findAll("a", {"node-type": "feed_list_item_date"})
+                for usercard_tag in usercard_tags:
+                    usercard = usercard_tag.get('href')
                     try:
                         user_card = re.findall('\d{10}', usercard)[0]
+                        time = re.findall("\d{1,2}月.*", usercard_tag.get_text())[0]  # 转发时间
                     except IndexError:
                         continue  # 该用户的id不是10位数字，跳过这位用户
                     self.forwards.append({
                     "forward_usercard": user_card,
+                        "forward_time": time
                     })
         except IndexError:  #转发页面只有1页的情况
             self.bsObj = BeautifulSoup(html, 'html.parser')
-            usercard_tags = self.bsObj.findAll("a", {"node-type": "name"})
-
-            for usecard_tag in usercard_tags:
-                usercard = usecard_tag.get('usercard')
+            #usercard_tags = self.bsObj.findAll("a", {"node-type": "name"})
+            usercard_tags = self.bsObj.findAll("a", {"node-type": "feed_list_item_date"})
+            for usercard_tag in usercard_tags:
+                usercard = usercard_tag.get('href')
                 try:
                     user_card = re.findall('\d{10}', usercard)[0]
+                    time = re.findall("\d{1,2}月.*", usercard_tag.get_text())[0]  # 转发时间
                 except IndexError:
                     continue  # 该用户的id不是10位数字，跳过这位用户
                 self.forwards.append({
                     "forward_usercard": user_card,
+                    "forward_time": time
                 })
         self.prasecomments()
     def get_comments(self,r):  #解析json中的评论
@@ -294,10 +288,15 @@ class wbvpageinfo(threading.Thread):
              "forwards": self.forwards, #pymongo.errors.ServerSelectionTimeoutError: No servers found yet
              }
         )
-
-#读取links.json
-links = json.load(open("links.json", 'r', encoding='utf-8'))["links"]
-def morethreads(threadnum):
+def start(threadnum):
+    try:
+        cookiefile = open('cookies.json', 'r', encoding='utf-8')
+    except FileNotFoundError:
+        Getcookies()
+        cookiefile = open('cookies.json', 'r', encoding='utf-8')
+    for cookie in json.load(cookiefile)["cookies"]:
+        cookies[cookie["name"]] = cookie["value"]
+    cookiefile.close()
     linksqueue=[]
     links_len = len(links)
     split_num = links_len // threadnum
@@ -310,6 +309,7 @@ def morethreads(threadnum):
     linksqueue.append(wbvpageinfo(linkend))
     i = 0
     while (i < threadnum):
-        linksqueue[i].start()
+        #linksqueue[i].start()
+        linksqueue[i].run()
         i=i+1
-morethreads(1)  #在此输入进程数
+start(1)  #在此输入进程数
