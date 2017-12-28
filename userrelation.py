@@ -9,8 +9,7 @@ import json
 #https://m.weibo.cn/api/container/getIndex?type=uid&value=1259110474&containerid=2302831259110474&page=1
 #https://m.weibo.cn/p/index?containerid=231051_-_fansrecomm_-_1259110474&luicode=10000011&lfid=1005051259110474
 #https://m.weibo.cn/api/container/getIndex?containerid=2304131259110474_-_WEIBO_SECOND_PROFILE_WEIBO&luicode=10000011&lfid=2302831259110474&page_type=03&page=1 #微博内容
-import xlrd
-import xlwt
+
 
 
 try:
@@ -48,7 +47,7 @@ class wbrelation():
         self.headers = {"User-Agent": ""}
         self.headers["User-Agent"] = (random.choice(USER_AGENTS))
         nowuser = '5019697368'
-        url="https://m.weibo.cn/api/container/getIndex?type=uid&value=%s'" %(nowuser)
+        url="https://m.weibo.cn/api/container/getIndex?type=uid&value=%s" %(nowuser)
         r = self.getrequest(url)
         content = json.loads(r)
         for data in content.get('tabsInfo').get('tabs'):
@@ -67,6 +66,7 @@ class wbrelation():
         url = 'https://m.weibo.cn/api/container/getIndex?type=uid&value=%s'%(nowuser)
         print(url)
         r = self.getrequest(url)
+
         data = r.json()
         self.guanzhu = data["data"]["userInfo"]["follow_count"]
         self.fensi= data["data"]["userInfo"]["followers_count"]
@@ -84,13 +84,12 @@ class wbrelation():
 
     def getfollow(self,nowuser):
         self.followuser_id=[]
-        pattern='\d{10}'
-        num = int(self.guanzhu/10)
+        num = int(self.guanzhu/20)
         if num==0:
             num=1
-        if num>16:
-            num=16
-        for page in range(1,num+2):
+        if num>10:
+            num=10
+        for page in range(1,num+1):
           #nowuser='1259110474'
           try:
               url="https://m.weibo.cn/api/container/getIndex?containerid=231051_-_followers_-_%s&luicode=10000011&lfid=1005051259110474&page=%d"%(nowuser,page)
@@ -99,10 +98,12 @@ class wbrelation():
               self.fans_num = 0
               self.headers["User-Agent"] = (random.choice(USER_AGENTS))
               r = self.getrequest(url)
-        # r=requests.get(url,cookies=cookies,headers=self.headers).content
-
-              data=r.json()
-          #print(data)
+              # r=requests.get(url,cookies=cookies,headers=self.headers).content
+              try:
+                 data=r.json()
+              except json.decoder.JSONDecodeError:
+                  break
+              #print(data)
               try:
                  user1=data["data"]["cards"][0]
               except IndexError:
@@ -114,11 +115,12 @@ class wbrelation():
                  user_id=userii["id"]
                  hh=len(str(user_id))
                  if(int(hh>10)):
-                     break
-                 user_name=userii["screen_name"]
-                 self.followuser_id.append(str(user_id))
-                 #users_id=user_id.strip()
-                 print(str(user_id)+ ' : '+user_name)
+                     i=i+1
+                 else:
+                   user_name=userii["screen_name"]
+                   self.followuser_id.append(str(user_id))
+                   #users_id=user_id.strip()
+                   print(str(user_id)+ ' : '+user_name)
                 #print(user_name)
                except IndexError:
                    continue
@@ -127,8 +129,7 @@ class wbrelation():
         print(self.followuser_id)
     def getfans(self,nowuser):
         self.fansuser_id=[]
-        pattern='\d{10}'
-        num=int(self.fensi/10)
+        num=int(self.fensi/20)
         if num==0:
             num=1
         if num>250:
@@ -141,9 +142,10 @@ class wbrelation():
           self.fans_num = 0
           self.headers["User-Agent"] = (random.choice(USER_AGENTS))
           r = self.getrequest(url)
-        # r=requests.get(url,cookies=cookies,headers=self.headers).content
-          doc_tree = etree.HTML(r.content)
-          data=r.json()
+          try:
+              data = r.json()
+          except json.decoder.JSONDecodeError:
+              break
           try:
             user1=data["data"]["cards"][0]
           except IndexError:
@@ -157,22 +159,12 @@ class wbrelation():
                 user_id=userii["id"]
                 user_name=userii["screen_name"]
                 self.fansuser_id.append(str(user_id))
-                #users_id = user_id.strip()
                 print(str(user_id) + ' : '+user_name)
                 #print(user_name)
             except IndexError:
                   continue
         print(self.fansuser_id)
-    def updatetxt(self):
-        myfile = open('relation.txt', 'a')
-        #myfile.write('\n' + user_id + '\n' + 'follow' + ' ')
-        for line in self.follow:
-            myfile.write(line + ' ')
-        myfile = open('relation.txt', 'a')
-        myfile.write('\n' + 'fans' + ' ')
 
-        for line in self.fans:
-            myfile.write(line + ' ')
 
     def updatedb(self,nowuser):
         #nowuser='1259110474'
@@ -194,3 +186,4 @@ with open('userid.txt', 'r') as f0:
         run.getfollow(nowuser)
         run.getfans(nowuser)
         run.updatedb(nowuser)
+
