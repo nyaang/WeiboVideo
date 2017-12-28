@@ -85,11 +85,11 @@ class wbrelation():
     def getfollow(self,nowuser):
         self.followuser_id=[]
         num = int(self.guanzhu/20)
-        if num==0:
-            num=1
-        if num>10:
-            num=10
-        for page in range(1,num+1):
+        if self.guanzhu%20==0:
+            num=num-1
+        if num>=10:
+            num=9
+        for page in range(1,num+2):
           #nowuser='1259110474'
           try:
               url="https://m.weibo.cn/api/container/getIndex?containerid=231051_-_followers_-_%s&luicode=10000011&lfid=1005051259110474&page=%d"%(nowuser,page)
@@ -130,11 +130,11 @@ class wbrelation():
     def getfans(self,nowuser):
         self.fansuser_id=[]
         num=int(self.fensi/20)
-        if num==0:
-            num=1
+        if self.fensi%20==0:
+            num=num-1
         if num>250:
-            num=250
-        for page in range(1,num+1):
+            num=249
+        for page in range(1,num+2):
           #nowuser='1259110474'
           url="https://m.weibo.cn/api/container/getIndex?containerid=231051_-_fans_-_%s&type=all&since_id=%d"%(nowuser,page)
           self.headers = {"User-Agent": ""}
