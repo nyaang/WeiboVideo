@@ -13,10 +13,10 @@ import json
 
 
 try:
-    cookiefile = open('cookies.json', 'r', encoding='utf-8')
+    cookiefile = open('values/cookies.json', 'r', encoding='utf-8')
 except FileNotFoundError:
     Getcookies()
-    cookiefile = open('cookies.json', 'r', encoding='utf-8')
+    cookiefile = open('values/cookies.json', 'r', encoding='utf-8')
 for cookie in json.load(cookiefile)["cookies"]:
     cookies[cookie["name"]] = cookie["value"]
 cookiefile.close()

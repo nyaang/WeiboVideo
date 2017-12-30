@@ -1,8 +1,0 @@
-scrapy
-pypiwin32
-pymongo
-jieba
-numpy
-selenium
-lxml
-fake_useragent

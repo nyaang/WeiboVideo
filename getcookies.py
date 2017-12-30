@@ -7,7 +7,7 @@ def Getcookies():
     cookies={"cookies":[]}
     for item in chromedriver.get_cookies():  #获取cookies，并写入本地，命名为cookies.json
         cookies["cookies"].append({"name":item["name"], "value":item["value"]})
-    file = open('cookies.json', 'w', encoding='utf-8')
+    file = open('values/cookies.json', 'w', encoding='utf-8')
     json.dump(cookies, file, indent=4, sort_keys=False, ensure_ascii=False)
     file.close()
     chromedriver.close()

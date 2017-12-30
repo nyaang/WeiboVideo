@@ -2,10 +2,10 @@ import requests,re,time,json,pymongo,threading,random
 from bs4 import BeautifulSoup
 from getcookies import Getcookies
 from fake_useragent import UserAgent
-cookies={}
+cookies=[]
 ua = UserAgent()
-proxies=json.load(open("proxies_useable.json", 'r', encoding='utf-8'))
-links = json.load(open("links.json", 'r', encoding='utf-8'))["links"]
+proxies=json.load(open("values/proxies_useable.json", 'r', encoding='utf-8'))
+links = json.load(open("values/links.json", 'r', encoding='utf-8'))["links"]
 class wbvpageinfo(threading.Thread):
     def __init__(self,links):
         threading.Thread.__init__(self)
@@ -20,7 +20,7 @@ class wbvpageinfo(threading.Thread):
         #使用随机的user-agent
         self.headers["User-Agent"] = ua.random
         try:
-            r = requests.get(url, cookies=cookies, headers=self.headers,proxies=self.random_proxy(),timeout=3.05)
+            r = requests.get(url, cookies=random.choice(cookies), headers=self.headers,proxies=random.choice(proxies),timeout=3.05)
             if(r.status_code==414):
                 print("414错误！")
                 #time.sleep(60)
@@ -30,8 +30,8 @@ class wbvpageinfo(threading.Thread):
         except:
             r = self.getrequest(url)
             return r
-    def random_proxy(self):
-        proxy=random.choice(proxies)
+    # def random_proxy(self):
+    #     proxy=random.choice(proxies)
         return proxy
     def prasevideo(self):
         self.comments_num=0 #评论数
@@ -290,15 +290,21 @@ class wbvpageinfo(threading.Thread):
              "forwards": self.forwards, #pymongo.errors.ServerSelectionTimeoutError: No servers found yet
              }
         )
-def start(threadnum):
+def opencookies(cookiename):
     try:
-        cookiefile = open('cookies.json', 'r', encoding='utf-8')
+        cookiefile = open('values/'+cookiename+'.json', 'r', encoding='utf-8')
     except FileNotFoundError:
-        Getcookies()
-        cookiefile = open('cookies.json', 'r', encoding='utf-8')
+        return False
+    cookiename={}
     for cookie in json.load(cookiefile)["cookies"]:
-        cookies[cookie["name"]] = cookie["value"]
+        cookiename[cookie["name"]] = cookie["value"]
     cookiefile.close()
+    cookies.append(cookiename)
+    return True
+def start(threadnum):
+    i = 1
+    while opencookies('cookies' + str(i)):
+        i = i + 1
     linksqueue=[]
     links_len = len(links)
     split_num = links_len // threadnum
@@ -314,3 +320,4 @@ def start(threadnum):
         linksqueue[i].start()
         i=i+1
 start(1)  #在此输入进程数
+

@@ -1,13 +1,13 @@
 import requests,re,time,json,random
 from bs4 import BeautifulSoup
 from getcookies import Getcookies
-from values import categorys,USER_AGENTS
+from values.values import categorys,USER_AGENTS
 cookies={}
 try:
-    cookiefile = open('cookies.json', 'r', encoding='utf-8')
+    cookiefile = open('values/cookies.json', 'r', encoding='utf-8')
 except FileNotFoundError:
     Getcookies()
-    cookiefile = open('cookies.json', 'r', encoding='utf-8')
+    cookiefile = open('values/cookies.json', 'r', encoding='utf-8')
 for cookie in json.load(cookiefile)["cookies"]:
     cookies[cookie["name"]] = cookie["value"]
 cookiefile.close()
@@ -76,7 +76,7 @@ self.page) + '&end_id=' + str(self.end_id) + '&__rnd=' + str(self.generate_rnd()
         self.end_id = links_tag[links_num - 1]['mid']
     def close(self):
         # 把视频链接写入links.json
-        linkfile = open('links.json', 'w', encoding='utf-8')
+        linkfile = open('values/links.json', 'w', encoding='utf-8')
         self.links["links"] = list(self.links["links"])
         json.dump(self.links, linkfile, indent=4, sort_keys=False, ensure_ascii=False)
         linkfile.close()
