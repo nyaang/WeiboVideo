@@ -4,7 +4,7 @@ from fake_useragent import UserAgent
 cookies=[]
 ua = UserAgent()
 proxies=json.load(open("values/proxies_useable.json", 'r', encoding='utf-8'))
-links = json.load(open("values/links/links1.json", 'r', encoding='utf-8'))
+links = json.load(open("values/links.json", 'r', encoding='utf-8'))
 class wbvpageinfo(threading.Thread):
     def __init__(self,links):
         threading.Thread.__init__(self)
@@ -13,6 +13,9 @@ class wbvpageinfo(threading.Thread):
         for link in self.links:
             self.url=link
             if (self.prasevideo() == 404):
+                print(self.url + "链接失效")
+                links.remove(self.url)
+                self.updatelinks()
                 continue
     def getrequest(self,url):
         #使用随机的user-agent
@@ -22,7 +25,6 @@ class wbvpageinfo(threading.Thread):
             r = requests.get(url, cookies=self.cookies, headers=self.headers,proxies=random.choice(proxies),timeout=3.05)
             if(r.status_code==414):
                 print("414错误！")
-                #time.sleep(60)
                 r = self.getrequest(url)
             print("requested from:" + url)
             return r
@@ -34,7 +36,8 @@ class wbvpageinfo(threading.Thread):
             data=r.json()
             return data
         except json.decoder.JSONDecodeError:
-            print('error')
+            cookies.remove(self.cookies)
+            print('这个账号被封，请解封')
             print(self.cookies) #账号被微博封的情况
     def prasevideo(self):
         self.comments_num=0 #评论数
@@ -55,8 +58,7 @@ class wbvpageinfo(threading.Thread):
         except ValueError:
             self.comments_num=0
         except AttributeError:
-            print(self.url+" 404错误，原视频页面不存在")
-            return
+            return 404
 
         try:
             self.forwards_num = int(
@@ -74,7 +76,6 @@ class wbvpageinfo(threading.Thread):
         try:
             self.id=re.findall('\d{16}',id_tag)[0]
         except IndexError:
-            print(self.url+"链接失效")
             return 404
 
         self.author=self.bsObj.find("span",{"class":"W_f14 L_autocut bot_name W_fl"}).get_text()
@@ -164,7 +165,7 @@ class wbvpageinfo(threading.Thread):
                 comment_likes = 0
             else:
                 comment_likes = int(comment_likes_tag)
-            comment_time = re.findall("\d{1,2}月.*", comment_tag.get_text())[0]  #评论时间
+            comment_time = comment_tag.find("div", {"class": "WB_from S_txt2"}).get_text() #评论时间
             self.comments.append({"comment_content": comment_content,
                                   "comment_id": comment_id,
                                   "comment_likes": comment_likes,
@@ -293,6 +294,12 @@ class wbvpageinfo(threading.Thread):
              "forwards": self.forwards, #pymongo.errors.ServerSelectionTimeoutError: No servers found yet
              }
         )
+        links.remove(self.url)
+        self.updatelinks()
+    def updatelinks(self):
+        linkfile = open('values/linksnew.json', 'w', encoding='utf-8')
+        json.dump(links, linkfile, indent=4, sort_keys=False, ensure_ascii=False)
+        linkfile.close()
 def opencookies(cookiename):
     try:
         cookiefile = open('values/'+cookiename+'.json', 'r', encoding='utf-8')
@@ -323,4 +330,3 @@ def start(threadnum):
         linksqueue[i].start()
         i=i+1
 start(1)  #在此输入进程数
-
