@@ -1,7 +1,7 @@
 import json
 from selenium import webdriver
 def Getcookies():
-    chromedriver=webdriver.Chrome('./weibo/chromedriver/chromedriver.exe')
+    chromedriver=webdriver.Chrome('./values/chromedriver/chromedriver.exe')
     chromedriver.get('https://weibo.com/login.php')
     tempchar=input("请在登陆完成,并且页面加载完毕后输入任意字符，输入后程序将立刻获取cookies:")   #此行用来拖时间，用于登陆
     cookies={"cookies":[]}
