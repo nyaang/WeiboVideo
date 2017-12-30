@@ -1,16 +1,14 @@
 import requests,re,time,json,pymongo,threading,random
 from bs4 import BeautifulSoup
-from getcookies import Getcookies
 from fake_useragent import UserAgent
 cookies=[]
 ua = UserAgent()
 proxies=json.load(open("values/proxies_useable.json", 'r', encoding='utf-8'))
-links = json.load(open("values/links.json", 'r', encoding='utf-8'))["links"]
+links = json.load(open("values/links/links1.json", 'r', encoding='utf-8'))
 class wbvpageinfo(threading.Thread):
     def __init__(self,links):
         threading.Thread.__init__(self)
         self.links=links
-        self.proxy=None
     def run(self):
         for link in self.links:
             self.url=link
@@ -20,7 +18,8 @@ class wbvpageinfo(threading.Thread):
         #使用随机的user-agent
         self.headers["User-Agent"] = ua.random
         try:
-            r = requests.get(url, cookies=random.choice(cookies), headers=self.headers,proxies=random.choice(proxies),timeout=3.05)
+            self.cookies=random.choice(cookies)
+            r = requests.get(url, cookies=self.cookies, headers=self.headers,proxies=random.choice(proxies),timeout=3.05)
             if(r.status_code==414):
                 print("414错误！")
                 #time.sleep(60)
@@ -30,9 +29,13 @@ class wbvpageinfo(threading.Thread):
         except:
             r = self.getrequest(url)
             return r
-    # def random_proxy(self):
-    #     proxy=random.choice(proxies)
-        return proxy
+    def decodejson(self,r):
+        try:
+            data=r.json()
+            return data
+        except json.decoder.JSONDecodeError:
+            print('error')
+            print(self.cookies) #账号被微博封的情况
     def prasevideo(self):
         self.comments_num=0 #评论数
         self.forwards_num=0 #转发数
@@ -82,7 +85,7 @@ class wbvpageinfo(threading.Thread):
         #第一次获取转发页面请求
         firsturl="http://weibo.com/aj/v6/mblog/info/big?ajwvr=6&id="+self.id+"&__rnd="+str(self.generate_rnd())
         r = self.getrequest(firsturl)
-        data = r.json()
+        data = self.decodejson(r)
         totalpage=data["data"]["page"]["totalpage"] #转发页面的总页数
         html = data["data"]["html"]
         self.bsObj = BeautifulSoup(html, 'html.parser')
@@ -95,7 +98,7 @@ class wbvpageinfo(threading.Thread):
                     page) + '&__rnd=' + str(self.generate_rnd())
                 page = page + 1
                 r=self.getrequest(url)
-                data = r.json()
+                data = self.decodejson(r)
                 html = data["data"]["html"]
                 self.bsObj = BeautifulSoup(html, 'html.parser')
                 #usercard_tags = self.bsObj.findAll("a", {"node-type": "name"})
@@ -128,7 +131,7 @@ class wbvpageinfo(threading.Thread):
                 })
         self.prasecomments()
     def get_comments(self,r):  #解析json中的评论
-        data = r.json()
+        data = self.decodejson(r)
         html = data["data"]["html"]
         self.bsObj = BeautifulSoup(html, 'html.parser')
         comment_tags = self.bsObj.findAll("div", {"class": "list_li S_line1 clearfix"})
@@ -169,7 +172,7 @@ class wbvpageinfo(threading.Thread):
                                   "comment_time": comment_time
                                   })
     def get_comments_way2_more_comments(self,r):  #解析json中的评论，增加一次判断去重，用于二级评论的第一次加载
-        data = r.json()
+        data = self.decodejson(r)
         html = data["data"]["html"]
         self.bsObj = BeautifulSoup(html, 'html.parser')
         comment_tags = self.bsObj.findAll("div", {"class": "list_li S_line1 clearfix"})
@@ -259,7 +262,7 @@ class wbvpageinfo(threading.Thread):
         #第一次获取评论请求
         firsturl='https://weibo.com/aj/v6/comment/big?ajwvr=6&id='+self.id+'&page=1'+"&__rnd="+str(self.generate_rnd())
         r=self.getrequest(firsturl)
-        data = r.json() #json.decoder.JSONDecodeError:
+        data = self.decodejson(r)
         try:
             totalpage = data["data"]["page"]["totalpage"]
             page = 1

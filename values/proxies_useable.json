@@ -1,10 +1,1 @@
-[
-        {
-            "https": "（请参考这个格式，使用https代理，建议getpageinfo中的线程数略大于这里的ip数）IP地址:端口"
-
-        },
-        {
-            "https": "ip地址:端口"
-
-        }
-]
+[null]

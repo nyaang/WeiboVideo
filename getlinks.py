@@ -1,7 +1,9 @@
-import requests,re,time,json,random
+import requests,re,time,json
 from bs4 import BeautifulSoup
 from getcookies import Getcookies
-from values.values import categorys,USER_AGENTS
+from values.values import categorys
+from fake_useragent import UserAgent
+ua=UserAgent()
 cookies={}
 try:
     cookiefile = open('values/cookies.json', 'r', encoding='utf-8')
@@ -25,7 +27,7 @@ class weibovideolinks:
         self.page = 2
         self.url=url
         self.category=category
-        self.headers["User-Agent"] = (random.choice(USER_AGENTS))
+        self.headers["User-Agent"] = ua.random
         r = requests.get(self.url,cookies=cookies,headers=self.headers)
         self.bsObj=BeautifulSoup(r.content,'lxml')
         links_tag=self.bsObj.findAll("a",{"target":"_blank"})
@@ -52,7 +54,7 @@ class weibovideolinks:
     def getlinks(self):
         self.url = 'https://weibo.com/p/aj/v6/mblog/videolist?type=' + self.category + '&page=' + str(
 self.page) + '&end_id=' + str(self.end_id) + '&__rnd=' + str(self.generate_rnd())
-        self.headers["User-Agent"] = (random.choice(USER_AGENTS))
+        self.headers["User-Agent"] = ua.random
         try:
             r = requests.get(self.url, cookies=cookies, headers=self.headers)
         except requests.exceptions.ConnectionError:
