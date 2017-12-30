@@ -60,5 +60,5 @@ d-----        spiders
 
   [1]: http://www.jianshu.com/p/d6c7adfe45cf
   [2]: https://www.jetbrains.com/pycharm/download/#section=windows
-  [3]: .values/imgs/robomongo1.JPG
-  [4]: .values/imgs/weiboitem1.JPG
+  [3]: values/imgs/robomongo1.JPG
+  [4]: values/imgs/weiboitem1.JPG
