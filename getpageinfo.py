@@ -39,9 +39,12 @@ class wbvpageinfo(threading.Thread):
             return data
         except json.decoder.JSONDecodeError:
             print("未知错误")
-            r=self.getrequest(r.url)
-            data =self.decodejson(r)
-            return data
+            self.errortimes=self.errortimes+1
+            if self.errortimes<=3:
+                r=self.getrequest(r.url)
+                data =self.decodejson(r)
+                return data
+            self.errortimes=0   #如果连续三次请求一个评论或转发页面json格式的链接都出错，则放弃这个页面
     def prasevideo(self):
         self.comments_num=0 #评论数
         self.forwards_num=0 #转发数
@@ -53,6 +56,7 @@ class wbvpageinfo(threading.Thread):
         self.forwards=[]
         self.likes=[]
         self.headers={"User-Agent":''}
+        self.errortimes=0
         r = self.getrequest(self.url)
         self.bsObj=BeautifulSoup(r.content,'lxml')
         try:
