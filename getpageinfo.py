@@ -21,10 +21,10 @@ class wbvpageinfo(threading.Thread):
         #使用随机的user-agent
         self.headers["User-Agent"] = ua.random
         try:
-            r = requests.get(url, cookies=cookies[0], headers=self.headers,proxies=random.choice(proxies),timeout=3.05,allow_redirects = False)
+            r = requests.get(url, cookies=cookies[1], headers=self.headers,proxies=random.choice(proxies),timeout=3.05)#,allow_redirects = False)
             if(r.status_code==302): #账号受限
                 print("这个账号受到限制，请换一个")
-                exit(1)
+                r = self.getrequest(url)
             if(r.status_code==414):
                 print("414错误！")
                 r = self.getrequest(url)
@@ -86,37 +86,21 @@ class wbvpageinfo(threading.Thread):
         #第一次获取转发页面请求
         firsturl="http://weibo.com/aj/v6/mblog/info/big?ajwvr=6&id="+self.id+"&__rnd="+str(self.generate_rnd())
         r = self.getrequest(firsturl)
-        if r.status_code!=301:
-            data = self.decodejson(r)
-            totalpage=data["data"]["page"]["totalpage"] #转发页面的总页数
-            html = data["data"]["html"]
-            self.bsObj = BeautifulSoup(html, 'html.parser')
-            maxid_tag=self.bsObj.find("a",{"class":"page S_txt1 S_bg2"})
-            try:
-                maxid=re.findall('\d{16}',str(maxid_tag))[1]
-                page = 1
-                while (page <= totalpage):
-                    url = 'https://weibo.com/aj/v6/mblog/info/big?ajwvr=6&id=' + self.id + '&max_id=' + maxid + '&page=' + str(
-                        page) + '&__rnd=' + str(self.generate_rnd())
-                    page = page + 1
-                    r=self.getrequest(url)
-                    data = self.decodejson(r)
-                    html = data["data"]["html"]
-                    self.bsObj = BeautifulSoup(html, 'html.parser')
-                    #usercard_tags = self.bsObj.findAll("a", {"node-type": "name"})
-                    usercard_tags = self.bsObj.findAll("a", {"node-type": "feed_list_item_date"})
-                    for usercard_tag in usercard_tags:
-                        usercard = usercard_tag.get('href')
-                        try:
-                            user_card = re.findall('\d{10}', usercard)[0]
-                            time = re.findall("\d{1,2}月.*", usercard_tag.get_text())[0]  # 转发时间
-                        except IndexError:
-                            continue  # 该用户的id不是10位数字，跳过这位用户
-                        self.forwards.append({
-                        "forward_usercard": user_card,
-                            "forward_time": time
-                        })
-            except IndexError:  #转发页面只有1页的情况
+        data = self.decodejson(r)
+        totalpage=data["data"]["page"]["totalpage"] #转发页面的总页数
+        html = data["data"]["html"]
+        self.bsObj = BeautifulSoup(html, 'html.parser')
+        maxid_tag=self.bsObj.find("a",{"class":"page S_txt1 S_bg2"})
+        try:
+            maxid=re.findall('\d{16}',str(maxid_tag))[1]
+            page = 1
+            while (page <= totalpage):
+                url = 'https://weibo.com/aj/v6/mblog/info/big?ajwvr=6&id=' + self.id + '&max_id=' + maxid + '&page=' + str(
+                    page) + '&__rnd=' + str(self.generate_rnd())
+                page = page + 1
+                r=self.getrequest(url)
+                data = self.decodejson(r)
+                html = data["data"]["html"]
                 self.bsObj = BeautifulSoup(html, 'html.parser')
                 #usercard_tags = self.bsObj.findAll("a", {"node-type": "name"})
                 usercard_tags = self.bsObj.findAll("a", {"node-type": "feed_list_item_date"})
@@ -124,13 +108,28 @@ class wbvpageinfo(threading.Thread):
                     usercard = usercard_tag.get('href')
                     try:
                         user_card = re.findall('\d{10}', usercard)[0]
-                        time = re.findall("\d{1,2}月.*", usercard_tag.get_text())[0]  # 转发时间
+                        time = usercard_tag.get('title') # 转发时间
                     except IndexError:
                         continue  # 该用户的id不是10位数字，跳过这位用户
                     self.forwards.append({
-                        "forward_usercard": user_card,
+                    "forward_usercard": user_card,
                         "forward_time": time
                     })
+        except IndexError:  #转发页面只有1页的情况
+            self.bsObj = BeautifulSoup(html, 'html.parser')
+            #usercard_tags = self.bsObj.findAll("a", {"node-type": "name"})
+            usercard_tags = self.bsObj.findAll("a", {"node-type": "feed_list_item_date"})
+            for usercard_tag in usercard_tags:
+                usercard = usercard_tag.get('href')
+                try:
+                    user_card = re.findall('\d{10}', usercard)[0]
+                    time = re.findall("\d{1,2}月.*", usercard_tag.get_text())[0]  # 转发时间
+                except IndexError:
+                    continue  # 该用户的id不是10位数字，跳过这位用户
+                self.forwards.append({
+                    "forward_usercard": user_card,
+                    "forward_time": time
+                })
         self.prasecomments()
     def get_comments(self,r):  #解析json中的评论
         data = self.decodejson(r)
