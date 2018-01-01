@@ -21,7 +21,7 @@ class wbvpageinfo(threading.Thread):
         #使用随机的user-agent
         self.headers["User-Agent"] = ua.random
         try:
-            r = requests.get(url, cookies=cookies[1], headers=self.headers,proxies=random.choice(proxies),timeout=3.05)#,allow_redirects = False)
+            r = requests.get(url, cookies=cookies[0], headers=self.headers,proxies=random.choice(proxies),timeout=3.05)#,allow_redirects = False)
             if(r.status_code==302): #账号受限
                 print("这个账号受到限制，请换一个")
                 r = self.getrequest(url)
@@ -39,6 +39,9 @@ class wbvpageinfo(threading.Thread):
             return data
         except json.decoder.JSONDecodeError:
             print("未知错误")
+            r=self.getrequest(r.url)
+            data =self.decodejson(r)
+            return data
     def prasevideo(self):
         self.comments_num=0 #评论数
         self.forwards_num=0 #转发数
