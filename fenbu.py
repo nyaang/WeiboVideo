@@ -1,33 +1,20 @@
-import requests, re, time, json, random, pymongo, threading
-from getcookies import Getcookies
-from values import USER_AGENTS
-from lxml import etree
-
-import json
-
-# https://m.weibo.cn/api/container/getIndex?type=uid&value=1259110474 个人信息
-# https://m.weibo.cn/api/container/getIndex?type=uid&value='+id+'&containerid='+get_containerid(url)+'&page='+str(i)  #微博个人首页
-# https://m.weibo.cn/api/container/getIndex?type=uid&value=1259110474&containerid=2302831259110474&page=1
-# https://m.weibo.cn/p/index?containerid=231051_-_fansrecomm_-_1259110474&luicode=10000011&lfid=1005051259110474
-# https://m.weibo.cn/api/container/getIndex?containerid=2304131259110474_-_WEIBO_SECOND_PROFILE_WEIBO&luicode=10000011&lfid=2302831259110474&page_type=03&page=1 #微博内容
-
-# proxies=json.load(open("proxies.json", 'r', encoding='utf-8'))["proxies"]
+import requests,pymongo,threading,json,random
+from fake_useragent import UserAgent
 
 userids = json.load(open("userids.json", 'r', encoding='utf-8'))
-
+ua = UserAgent()
 
 class wbrelation(threading.Thread):
     def __init__(self, userids):
         threading.Thread.__init__(self)
         self.userids = userids
-
     def run(self):
         for userid in self.userids:
             self.userid = userid
             self.getuser(self.userid)
 
     def getrequest(self, url):
-        self.headers["User-Agent"] = (random.choice(USER_AGENTS))
+        self.headers["User-Agent"] = ua.random
         try:
             r = requests.get(url, headers=self.headers)
             if (r.status_code == 414):
@@ -43,33 +30,12 @@ class wbrelation(threading.Thread):
             r = self.getrequest(url)
             return r
 
-    def getrequest1(self, url):
-        proxies = json.load(open("proxies.json", 'r', encoding='utf-8'))["proxies"]
-        self.headers["User-Agent"] = (random.choice(USER_AGENTS))
-        try:
-            r = requests.get(url, headers=self.headers, proxies=random.choice(proxies))
-            if (r.status_code == 414):
-                print("60错误！")
-                r = self.getrequest1(url)
-            print("requested from:" + url)
-            return r
-        except requests.exceptions.ConnectionError:
-            print("连接无响应，重试")
-            r = self.getrequest1(url)
-            return r
-        except requests.exceptions.ChunkedEncodingError:
-            r = self.getrequest1(url)
-            return r
-
     def decodejson(self, r):
-        i = 0
         try:
             data = r.json()
             if (data["ok"] == 1):
                 return data
-
             elif (data["ok"] == 0 and data["msg"] != '这里还没有内容'):
-                i = i + 1
                 print("ip暂时被封")
                 r = self.getrequest(r.url)
                 data = self.decodejson(r)
@@ -77,25 +43,17 @@ class wbrelation(threading.Thread):
         except json.decoder.JSONDecodeError as e:
             print(e)
             if(e=='Extra data: line 1 column 75 (char 74)'):     #用户不存在
-
                 return None
-            elif(e=='Expecting value: line 1 column 1 (char 0)'): #网络不好
+            elif(e=='Expecting value: line 1 column 1 (char 0)'):   #网络不好
               print("网络不好")
               r = self.getrequest(r.url)
               data = self.decodejson(r)
               return data
 
-
-    def getuser(self, nowuser):
+    def getuser(self):
         self.guanzhu = 0
         self.fensi = 0
-        self.headers = {"User-Agent": ""}
-        self.errortimes = 0
-        self.headers["User-Agent"] = (random.choice(USER_AGENTS))
-        # nowuser = '1259110474'
-        url = 'https://m.weibo.cn/api/container/getIndex?type=uid&value=%s' % (nowuser)
-        print(url)
-
+        url = 'https://m.weibo.cn/api/container/getIndex?type=uid&value=%s' % self.userid
         r = self.getrequest(url)
         data = self.decodejson(r)
         try:
@@ -107,10 +65,8 @@ class wbrelation(threading.Thread):
         self.fensi = data["data"]["userInfo"]["followers_count"]
         print(self.guanzhu)
         print(self.fensi)
-        self.getfollow(self.userid)
-
-    def getfollow(self, nowuser):
-        self.errortimes = 0
+        self.getfollow()
+    def getfollow(self):
         self.followuser_id = []
         num = int(self.guanzhu / 20)
         if self.guanzhu % 20 == 0:
@@ -118,14 +74,11 @@ class wbrelation(threading.Thread):
         if num >= 10:
             num = 9
         for page in range(1, num + 2):
-            # nowuser='1259110474'
             try:
                 url = "https://m.weibo.cn/api/container/getIndex?containerid=231051_-_followers_-_%s&luicode=10000011&lfid=1005051259110474&page=%d" % (
-                nowuser, page)
-                self.headers = {"User-Agent": ""}
+                self.userid, page)
                 self.follow_num = 0
                 self.fans_num = 0
-                self.headers["User-Agent"] = (random.choice(USER_AGENTS))
                 r = self.getrequest(url)
                 data = self.decodejson(r)
                 try:
@@ -151,12 +104,9 @@ class wbrelation(threading.Thread):
             except KeyError:
                 continue
             print('爬取完成')
-        self.getfans(self.userid)
-
-    def getfans(self, nowuser):
-        self.errortimes = 0
+        self.getfans()
+    def getfans(self):
         self.fansuser_id = []
-
         num = int(self.fensi / 20)
         if self.fensi % 20 == 0:
             num = num - 1
@@ -164,11 +114,11 @@ class wbrelation(threading.Thread):
             num = 249
         for page in range(1, num + 2):
             url = "https://m.weibo.cn/api/container/getIndex?containerid=231051_-_fans_-_%s&type=all&since_id=%d" % (
-            nowuser, page)
+            self.userid, page)
             self.headers = {"User-Agent": ""}
             self.follow_num = 0
             self.fans_num = 0
-            self.headers["User-Agent"] = (random.choice(USER_AGENTS))
+            self.headers["User-Agent"] = ua.random
             r = self.getrequest(url)
             data = self.decodejson(r)
             try:
@@ -203,13 +153,10 @@ class wbrelation(threading.Thread):
         )
         userids.remove(self.userid)
         self.updateuserids()
-
     def updateuserids(self):
         userfile = open('usersnew.json', 'w', encoding='utf-8')
         json.dump(userids, userfile, indent=4, sort_keys=False, ensure_ascii=False)
         userfile.close()
-
-
 def start(threadnum):
     linksqueue = []
     links_len = len(userids)
@@ -225,6 +172,4 @@ def start(threadnum):
     while (i < threadnum):
         linksqueue[i].start()
         i = i + 1
-
-
 start(2)
