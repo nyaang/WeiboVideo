@@ -11,9 +11,10 @@ class wbrelation(threading.Thread):
     def run(self):
         for userid in self.userids:
             self.userid = userid
-            self.getuser(self.userid)
+            self.getuser()
 
     def getrequest(self, url):
+        self.headers={"User-Agent":''}
         self.headers["User-Agent"] = ua.random
         try:
             r = requests.get(url, headers=self.headers)
