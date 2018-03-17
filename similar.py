@@ -1,43 +1,42 @@
-import time
-import numpy
+import time,numpy
 from numpy import *
 from copy import deepcopy
-from database_utils import ConnectDB
-from values import DATE_FORMAT, DATABASE_TV, COLLECTION_ITEM, NUM
+from pymongo import MongoClient
 
-
+DB_Name = 'WeiboTV'
+Collection_Name = 'WeiboItem'
+DATE_FORMAT = '%Y-%m-%d %H:%M:%S'
+NUM = ["zero", "one", "two", "three", "four", "five", "six", "seven", "eight", "nine"]
 class Similar:
-    client = None
-    database = None
-    collection = None
 
     def __init__(self):
-        self.client = ConnectDB(DATABASE_TV, COLLECTION_ITEM)
-        self.database, self.collection = self.client.get_handler()
+        self.client = MongoClient()
+        self.database = self.client[DB_Name]
+        self.collection = self.database[Collection_Name]
 
     @staticmethod
-    def cosine(a, b):
+    def cosine(a, b):   #求余弦？
         return a.dot(b)/sqrt(a.dot(a))/sqrt(b.dot(b))
 
-    def add_tags(self, item, tag_set):
+    def add_tags(self, item, tag_set):  #关键词合并？
         for t in item["tags"]:
             tag_set.add(t["tag"])
         return tag_set
 
-    def cut_split(self, item):
+    def cut_split(self, item):  #以‘/’划分关键词？
         comment = item["comments"]
         cut = comment.split('/')
         comment = comment.replace('/','')
         length = len(comment.replace('/',''))
         return comment, cut, length
 
-    def init_vec(self, tags):
+    def init_vec(self, tags):   #初始化向量
         vec = {}
         for i in tags:
             vec[i] = 0
         return vec
 
-    def frequence(self, cut, len, tags):
+    def frequence(self, cut, len, tags):    #求关键词在评论中的相对词频？
         vec = self.init_vec(tags)
         for word in cut:
             if word in tags:
@@ -46,7 +45,7 @@ class Similar:
         ar = numpy.array(li)
         return ar
 
-    def process(self):
+    def process(self):  #求相似度
         links = 0
         var = 0
         for item_a in self.collection.find():
