@@ -1,16 +1,14 @@
-from database_utils import ConnectDB
-from values import DATABASE_TV, COLLECTION_ITEM, NUM
+from pymongo import MongoClient
 
+DB_Name = 'WeiboTV'
+Collection_Name = 'WeiboItem'
+NUM = ["zero", "one", "two", "three", "four", "five", "six", "seven", "eight", "nine"]
 
 class Analyse:
-    client = None
-    database = None
-    collection = None
-
     def __init__(self):
-        self.client = ConnectDB(DATABASE_TV, COLLECTION_ITEM)
-        self.database, self.collection = self.client.get_handler()
-
+        self.client=MongoClient()
+        self.database=self.client[DB_Name]
+        self.collection=self.database[Collection_Name]
     def average(self):
         result = {}
         for i in range(10):
@@ -37,18 +35,21 @@ class Analyse:
 
     def count(self):
         user = {}
-        for item in self.collection.find():
-            for forward in item["forwards"]:
+        for weiboitem in self.collection.find():
+            for forward in weiboitem["forwards"]:
                 usercard = forward["forward_usercard"]
-                if user.get(usercard) is None:
+                if user.get(usercard) is None:  #如果转发过的用户不在user集合中，则加入user字典
                     user[usercard] = set()
-                user[usercard].add(item["url"])
+                user[usercard].add(weiboitem["url"])
 
-        data = self.database.get_collection('users')
+        active_users = self.database.get_collection('users')
         var = 0
         for (u, v) in user.items():
-            if len(v) > 9:
-                data.insert({"usercard":u},{"$set":{"forwards":len(v)}})
+            if len(v) > 9:  #如果一个用户的转发视频数大于9，则插入user数据库
+                active_user_cursor=active_users.find({"usercard":u})
+                if active_user_cursor.count()!=0:   #检查该用户是否已经在数据库中
+                    continue
+                active_users.insert({"usercard":u},{"$set":{"forwards":len(v)}})
             var += 1
             print(var)
         # for i in range(max+1):
@@ -67,4 +68,6 @@ class Analyse:
         #     print(i,":", len(result))
 
 a = Analyse()
+# a.average()
+# a.export()
 a.count()
