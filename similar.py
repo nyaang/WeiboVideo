@@ -1,4 +1,4 @@
-import time,numpy
+import time,numpy,threading
 from numpy import *
 from copy import deepcopy
 from pymongo import MongoClient
@@ -7,13 +7,16 @@ DB_Name = 'WeiboTV'
 Collection_Name = 'WeiboItem'
 DATE_FORMAT = '%Y-%m-%d %H:%M:%S'
 NUM = ["zero", "one", "two", "three", "four", "five", "six", "seven", "eight", "nine"]
-class Similar:
+class Similar(threading.Thread):
 
-    def __init__(self):
+    def __init__(self,items):
+        threading.Thread.__init__(self)
         self.client = MongoClient()
         self.database = self.client[DB_Name]
         self.collection = self.database[Collection_Name]
-
+        self.items=items
+    def run(self):
+        self.process()
     @staticmethod
     def cosine(a, b):   #求余弦？
         return a.dot(b)/sqrt(a.dot(a))/sqrt(b.dot(b))
@@ -48,7 +51,7 @@ class Similar:
     def process(self):  #求相似度
         links = 0
         var = 0
-        for item_a in self.collection.find():
+        for item_a in self.items:
             # all = 0
             # pos = 0
             tag = self.add_tags(item_a, set())
@@ -74,5 +77,28 @@ class Similar:
             value = time.localtime(int(time.time()))
             dt = time.strftime(DATE_FORMAT, value)
             print("%s\t\tprocesse %d\t\t" % (dt, var))
-pro = Similar()
-pro.process()
+def start(threadnum):
+    client = MongoClient()
+    database = client[DB_Name]
+    collection = database[Collection_Name]
+    similaritems=[]
+    wbitemsqueue = []
+    for wbitem in collection.find():
+        wbitemsqueue.append(wbitem)
+
+    items_len = len(wbitemsqueue)
+    split_num = items_len // threadnum
+    i = 1
+    while (i < threadnum):
+        itemsi=wbitemsqueue[split_num * (i-1):split_num * i]
+        similaritems.append(Similar(itemsi))
+        i = i + 1
+    itemend=wbitemsqueue[split_num * (i-1):items_len]
+    similaritems.append(Similar(itemend))
+    i = 0
+    while (i < threadnum):
+        similaritems[i].start()
+        i=i+1
+start(24)
+# pro = Similar()
+# pro.process()
