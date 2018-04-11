@@ -13,17 +13,7 @@ def initgroup():
         cursor = wbgroup_collection.find({'url': wbitem['url']})
         if isin(cursor)==0:
             wbgroup_collection.insert(
-                {'url':wbitem['url'],
-                   '0':'0',
-                   '1':'0',
-                   '2':'0',
-                   '3':'0',
-                   '4':'0',
-                   '5':'0',
-                   '6':'0',
-                   '7':'0',
-                   '8':'0',
-                   '9':'0'
+                {'url':wbitem['url']
                  }
             )
         else:
