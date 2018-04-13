@@ -1,11 +1,14 @@
-from values import DATABASE_TV, COLLECTION_ITEM, NUM, TOP
 from database_utils import ConnectDB
 import random
+from pymongo import MongoClient
 
 PICKED = False
 USERS = []
-RECOMMEND_TOP = TOP
+NUM = ["zero", "one", "two", "three", "four", "five", "six", "seven", "eight", "nine"]
+RECOMMEND_TOP = []
 
+DB_Name = 'WeiboItem'
+Collection_Name = 'WeiboItem'
 class Recommend:
     client = None
     database = None
@@ -16,11 +19,13 @@ class Recommend:
     video_set = None
     similar = 0
 
-    def __init__(self, cut='search', similar=2):
-        self.client = ConnectDB(DATABASE_TV, 'users')
-        self.database, self.users_c = self.client.get_handler()
+    def __init__(self, cut='accurate', similar=2):
+        self.client=MongoClient()
+        self.database=self.client[DB_Name]
+        self.users_c=self.database['users']
+
         self.users = []
-        self.item_c = self.database.get_collection('WeiboItem_similar_search')
+        self.item_c = self.database.get_collection('WeiboItem_similar_accurate')
         collection = 'WeiboGroup_' + cut
         self.group_c = self.database.get_collection(collection)
         self.similar = similar
@@ -165,20 +170,8 @@ class Recommend:
             print("average:%lf\t\t%lf\t\tscore:%lf\n" % (p_top, r_top, 0))
             file.write("top_average:%lf\t\t%lf\t\tscore:%lf\n" % (p_top, r_top, 0))
 
-# file = open('search.txt','w')
-# for i in range(10):
-#     file.write("===================================================================\n")
-#     pro = Recommend('search', i)
-#     pro.process()
-# file.close()
-# file = open('full.txt','w')
-# for i in range(10):
-#     file.write("===================================================================\n")
-#     pro = Recommend('full', i)
-#     pro.process()
-# file.close()
 ALL_VIDEOS = []
-client = ConnectDB("WeiboTV", "WeiboItem")
+client = ConnectDB(DB_Name, "WeiboItem")
 d, c = client.get_handler()
 for item in c.find():
     ALL_VIDEOS.append(item["url"])
