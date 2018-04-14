@@ -1,6 +1,4 @@
 from pymongo import MongoClient
-from values import LOCAL_HOST, PORT
-
 
 class ConnectDB:
     client = None
@@ -8,7 +6,7 @@ class ConnectDB:
     collection = None
 
     def __init__(self, db, cl):
-        self.client = MongoClient(LOCAL_HOST, PORT)
+        self.client = MongoClient()
         self.database = self.client.get_database(db)
         self.collection = self.database.get_collection(cl)
 
