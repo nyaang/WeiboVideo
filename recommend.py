@@ -4,11 +4,23 @@ from pymongo import MongoClient
 
 PICKED = False
 USERS = []
-NUM = ["zero", "one", "two", "three", "four", "five", "six", "seven", "eight", "nine"]
+NUM = [
+    "zero",
+    "one",
+    "two",
+    "three",
+    "four",
+    "five",
+    "six",
+    "seven",
+    "eight",
+    "nine"]
 RECOMMEND_TOP = []
 
 DB_Name = 'WeiboItem'
 Collection_Name = 'WeiboItem'
+
+
 class Recommend:
     client = None
     database = None
@@ -20,12 +32,13 @@ class Recommend:
     similar = 0
 
     def __init__(self, cut='accurate', similar=2):
-        self.client=MongoClient()
-        self.database=self.client[DB_Name]
-        self.users_c=self.database['users']
+        self.client = MongoClient()
+        self.database = self.client[DB_Name]
+        self.users_c = self.database['users']
 
         self.users = []
-        self.item_c = self.database.get_collection('WeiboItem_similar_accurate')
+        self.item_c = self.database.get_collection(
+            'WeiboItem_similar_accurate')
         collection = 'WeiboGroup_' + cut
         self.group_c = self.database.get_collection(collection)
         self.similar = similar
@@ -42,16 +55,16 @@ class Recommend:
         ran = self.video_set.count()
         return self.video_set[random.randrange(ran)]["url"]
 
-    def get_watched(self,  user):
+    def get_watched(self, user):
         watched = []
-        for video in self.item_c.find({"forwards.forward_usercard":user}):
+        for video in self.item_c.find({"forwards.forward_usercard": user}):
             watched.append(video["url"])
         return watched
 
     def get_group(self, item):
         try:
             group = item[str(self.similar)]
-        except:
+        except BaseException:
             if self.similar == 0:
                 raise ValueError("wrong similar!")
             else:
@@ -62,8 +75,8 @@ class Recommend:
     def get_videos(self, group, source):
         global ALL_VIDEOS
         temp = []
-        source = self.item_c.find_one({"url":source["url"]})
-        for item in self.group_c.find({str(self.similar):group}):
+        source = self.item_c.find_one({"url": source["url"]})
+        for item in self.group_c.find({str(self.similar): group}):
             temp.append(item["url"])
         all = {}
         for items in source["relative"]["zero"]:
@@ -71,7 +84,7 @@ class Recommend:
                 all[items["url"]] = items["value"]
         sort = sorted(all.items(), key=lambda item: item[1], reverse=True)
         recommend = []
-        for (u,v) in sort:
+        for (u, v) in sort:
             if len(recommend) > 20:
                 break
             else:
@@ -113,15 +126,16 @@ class Recommend:
             total = len(recommend)
             total_random = len(recommend_random)
             total_top = 20
-            t = len (watched)
+            t = len(watched)
             for video in recommend:
                 if video in watched:
                     correct += 1
             try:
                 rate_p += correct / total
                 rate_r += correct / t
-                file.write("%s\t\t%s\t\t%s\n" % (user, str(correct / total), str(correct / t)))
-                print(user, correct/total, correct/t)
+                file.write("%s\t\t%s\t\t%s\n" %
+                           (user, str(correct / total), str(correct / t)))
+                print(user, correct / total, correct / t)
             except ZeroDivisionError:
                 user_num -= 1
             for video in recommend_random:
@@ -130,8 +144,9 @@ class Recommend:
             try:
                 rate_p_random += correct_random / total_random
                 rate_r_random += correct_random / t
-                file.write("%s\t\t%s\t\t%s\n" % (user, str(correct_random / total_random), str(correct_random / t)))
-                print(user, correct_random/total_random, correct_random/t)
+                file.write("%s\t\t%s\t\t%s\n" % (user, str(
+                    correct_random / total_random), str(correct_random / t)))
+                print(user, correct_random / total_random, correct_random / t)
             except ZeroDivisionError:
                 user_num_random -= 1
             for video in RECOMMEND_TOP:
@@ -140,44 +155,58 @@ class Recommend:
             try:
                 rate_p_top += correct_top / total_top
                 rate_r_top += correct_top / t
-                file.write("%s\t\t%s\t\t%s\n" % (user, str(correct_top / total_top), str(correct_top / t)))
-                print(user, correct_top/total_top, correct_top/t)
+                file.write("%s\t\t%s\t\t%s\n" %
+                           (user, str(correct_top / total_top), str(correct_top / t)))
+                print(user, correct_top / total_top, correct_top / t)
             except ZeroDivisionError:
                 user_num_top -= 1
-        p = rate_p/user_num
-        r = rate_r/user_num
+        p = rate_p / user_num
+        r = rate_r / user_num
         print("======================================")
         try:
-            print("average:%lf\t\t%lf\t\tscore:%lf\n" % (p, r, 2 * p * r / (p + r)))
-            file.write("average:%lf\t\t%lf\t\tscore:%lf\n" % (p, r, 2 * p * r / (p + r)))
+            print("average:%lf\t\t%lf\t\tscore:%lf\n" %
+                  (p, r, 2 * p * r / (p + r)))
+            file.write("average:%lf\t\t%lf\t\tscore:%lf\n" %
+                       (p, r, 2 * p * r / (p + r)))
         except ZeroDivisionError:
             print("average:%lf\t\t%lf\t\tscore:%lf\n" % (p, r, 0))
             file.write("average:%lf\t\t%lf\t\tscore:%lf\n" % (p, r, 0))
         p_random = rate_p_random / user_num_random
         r_random = rate_r_random / user_num_random
         try:
-            print("average:%lf\t\t%lf\t\tscore:%lf\n" % (p_random, r, 2 * p_random * r_random / (p_random + r_random)))
-            file.write("random_average:%lf\t\t%lf\t\tscore:%lf\n" % (p_random, r_random, 2 * p_random * r_random / (p_random + r_random)))
+            print("average:%lf\t\t%lf\t\tscore:%lf\n" %
+                  (p_random, r, 2 * p_random * r_random / (p_random + r_random)))
+            file.write("random_average:%lf\t\t%lf\t\tscore:%lf\n" % (
+                p_random, r_random, 2 * p_random * r_random / (p_random + r_random)))
         except ZeroDivisionError:
             print("average:%lf\t\t%lf\t\tscore:%lf\n" % (p_random, r, 0))
-            file.write("random_average:%lf\t\t%lf\t\tscore:%lf\n" % (p_random, r_random, 0))
+            file.write(
+                "random_average:%lf\t\t%lf\t\tscore:%lf\n" %
+                (p_random, r_random, 0))
         p_top = rate_p_top / user_num_top
         r_top = rate_r_top / user_num_top
         try:
-            print("average:%lf\t\t%lf\t\tscore:%lf\n" % (p_top, r_top, 2 * p_top * r_top / (p_top + r_top)))
-            file.write("top_average:%lf\t\t%lf\t\tscore:%lf\n" % (p_top, r_top, 2 * p_top * r_top / (p_top + r_top)))
+            print("average:%lf\t\t%lf\t\tscore:%lf\n" %
+                  (p_top, r_top, 2 * p_top * r_top / (p_top + r_top)))
+            file.write("top_average:%lf\t\t%lf\t\tscore:%lf\n" %
+                       (p_top, r_top, 2 * p_top * r_top / (p_top + r_top)))
         except ZeroDivisionError:
             print("average:%lf\t\t%lf\t\tscore:%lf\n" % (p_top, r_top, 0))
-            file.write("top_average:%lf\t\t%lf\t\tscore:%lf\n" % (p_top, r_top, 0))
+            file.write(
+                "top_average:%lf\t\t%lf\t\tscore:%lf\n" %
+                (p_top, r_top, 0))
+
 
 ALL_VIDEOS = []
 client = ConnectDB(DB_Name, "WeiboItem")
 d, c = client.get_handler()
 for item in c.find():
     ALL_VIDEOS.append(item["url"])
-file = open('result.txt','w')
+file = open('result.txt', 'w')
 for i in range(500):
-    file.write("\nExperiment %d\n===================================================================\n" % i)
+    file.write(
+        "\nExperiment %d\n===================================================================\n" %
+        i)
     pro = Recommend('accurate', i)
     pro.process()
 file.close()

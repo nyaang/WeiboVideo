@@ -5,5 +5,17 @@ DATABASE_TV = 'WeiboTV'
 COLLECTION_ITEM = 'WeiboItem'
 COLLECTION_URL = 'WeiboUrl'
 
-#所有分类
-categorys={'vfun','game','dance','music','movie','tech','discovery','lifestyle','show','world','sports','moe'}
+# 所有分类
+categorys = {
+    'vfun',
+    'game',
+    'dance',
+    'music',
+    'movie',
+    'tech',
+    'discovery',
+    'lifestyle',
+    'show',
+    'world',
+    'sports',
+    'moe'}

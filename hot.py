@@ -16,10 +16,11 @@ for item in collection.find():
         comments = len(item["comments"])
     except KeyError:
         comments = 0
-    videos[item["url"]] = len(item["forwards"]) + len(item["comments"]) #一个视频的评论数加转发数之和为该视频的权值
-sort = sorted(videos.items(), key = lambda x: x[1], reverse=True)
+    videos[item["url"]] = len(item["forwards"]) + \
+        len(item["comments"])  # 一个视频的评论数加转发数之和为该视频的权值
+sort = sorted(videos.items(), key=lambda x: x[1], reverse=True)
 top20 = []
 for i in range(20):
     (u, v) = sort[i]
     top20.append(u)
-print(top20)    #输出权值最高的20个视频
+print(top20)  # 输出权值最高的20个视频

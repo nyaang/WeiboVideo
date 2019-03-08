@@ -1,5 +1,6 @@
 from pymongo import MongoClient
 
+
 class ConnectDB:
     client = None
     database = None

@@ -18,15 +18,15 @@ class Similar(threading.Thread):
     def run(self):
         self.process()
     @staticmethod
-    def cosine(a, b):   #求余弦？
+    def cosine(a, b):   #求余弦
         return a.dot(b)/sqrt(a.dot(a))/sqrt(b.dot(b))
 
-    def add_tags(self, item, tag_set):  #关键词合并？
+    def add_tags(self, item, tag_set):  #关键词合并
         for t in item["tags"]:
             tag_set.add(t["tag"])
         return tag_set
 
-    def cut_split(self, item):  #以‘/’划分关键词？
+    def cut_split(self, item):  #以‘/’划分关键词
         comment = item["comments"]
         cut = comment.split('/')
         comment = comment.replace('/','')
@@ -39,7 +39,7 @@ class Similar(threading.Thread):
             vec[i] = 0
         return vec
 
-    def frequence(self, cut, len, tags):    #求关键词在评论中的相对词频？
+    def frequence(self, cut, len, tags):    #求关键词在评论中的相对词频
         vec = self.init_vec(tags)
         for word in cut:
             if word in tags:

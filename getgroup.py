@@ -1,42 +1,50 @@
-import pymongo,time
-client=pymongo.MongoClient()
-db=client['WeiboTV']
-wbitem_collection=db['WeiboItem']
+import pymongo
+client = pymongo.MongoClient()
+db = client['WeiboTV']
+wbitem_collection = db['WeiboItem']
 wbgroup_collection = db['WeiboGroup']
+
+
 def isin(cursor):
-    l=0
+    l = 0
     for item in cursor:
-        l=l+1
+        l = l + 1
     return l
+
+
 def initgroup():
     for wbitem in wbitem_collection.find():
         cursor = wbgroup_collection.find({'url': wbitem['url']})
-        if isin(cursor)==0:
+        if isin(cursor) == 0:
             wbgroup_collection.insert(
-                {'url':wbitem['url']
+                {'url': wbitem['url']
                  }
             )
         else:
             print('already in the colletion')
 
+
 def insert_into_Group(item):
-    #if in WeiboGroup，then update the value of groupi
-    groupi=0
-    while(groupi<=9):
+    # if in WeiboGroup，then update the value of groupi
+    groupi = 0
+    while(groupi <= 9):
         try:
-            groupivalue=item[str(groupi)]
+            groupivalue = item[str(groupi)]
             # print (str(groupi)+ ':' +str(groupivalue))
             wbgroup_collection.update_one(
                 {"url": item['url']},
-                {"$set":{str(groupi):str(groupivalue)}}
+                {"$set": {str(groupi): str(groupivalue)}}
             )
-            groupi=groupi+1
+            groupi = groupi + 1
         except KeyError:
-            groupi=groupi+1
+            groupi = groupi + 1
             continue
+
 
 def main():
     initgroup()
     for wbitem in wbitem_collection.find():
         insert_into_Group(wbitem)
+
+
 main()
